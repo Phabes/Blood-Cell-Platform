@@ -1,12 +1,28 @@
-const express = require("express")
-const PORT = 4000
-const app = express()
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const userRoute = require("./routes/user");
 
+const { CONNECTION_URL } = require("./config/config");
+const PORT = process.env.PORT || 4000;
 
-app.listen(PORT, (error) => {
-    if (!error)
-        console.log("Lisiten on the port " + PORT.toString())
-    else
-        console.log("Error")
-})
+const app = express();
 
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/user", userRoute);
+
+mongoose
+  .connect(CONNECTION_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`SERVER RUNNING ON PORT ${PORT}`);
+    });
+  })
+  .catch((error) => {
+    console.log(error.message);
+  });
