@@ -1,0 +1,17 @@
+[
+    {
+      "nick": "Overnight",
+      "points": 25,
+      "email": "over@gmail.com"
+    },
+    {
+      "nick": "2-Day",
+      "points": 10,
+      "email": "over@gmail.com"
+    },
+    {
+      "nick": "Postal",
+      "points": 12,
+      "email": "over@gmail.com"
+    }
+  ]

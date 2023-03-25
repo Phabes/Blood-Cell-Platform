@@ -1,0 +1,28 @@
+[
+    {
+        "nick": "Student1",
+        "firstname" : "Ala",
+        "secondname" : "makota",
+        "email": "over@gmail.com",
+        "role": "student",
+        "password" : "test"
+
+    },
+    {
+        "nick": "Student2",
+        "firstname" : "Ala",
+        "secondname" : "makota",
+        "email": "over@gmail.com",
+        "role": "student",
+        "password" : "test"
+
+    },
+    {
+        "nick": "Overnight",
+        "points": 25,
+        "email": "over@gmail.com",
+        "role": "admin",
+        "password" : "test"
+
+    }
+]
