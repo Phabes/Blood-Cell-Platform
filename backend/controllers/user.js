@@ -2,10 +2,22 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SECRET, MAX_AGE } = require("../config/config");
 const User = require("../models/user");
+const { validateRegisterCredentials } = require("../validators/registerValidator");
 
 module.exports.registerUser = async (req, res) => {
   try {
     const { newUser } = req.body;
+    const { isValid, message } = validateRegisterCredentials(newUser);
+    if (!isValid){
+      const errorMessages = message.join("\r\n");
+      res.status(400).json(
+        { 
+          action: "USER_VALIDATION_ERROR",
+          errorMessages: errorMessages
+     });
+     return;
+    }
+    
     const checkUser = await User.findOne({ email: newUser.email });
     if (checkUser == null) {
       const user = new User(newUser);
