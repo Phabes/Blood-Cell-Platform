@@ -4,3 +4,7 @@
     padding: 15px;
     margin: 0 auto;
 }
+
+input[type="radio"] {
+    margin-right: 0.4em;
+}

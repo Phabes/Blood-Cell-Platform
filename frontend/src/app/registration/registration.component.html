@@ -1,30 +1,50 @@
-<div class="">
-    <form class="form-signin">
-      <h1 class="h3 mb-3 font-weight-normal">Zarejestruj się do systemu</h1>
-      <div class="mb-3">
-        <label for="inputEmail" class="sr-only ms-0">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required="" autofocus="">
-      </div>
-      
-      <div class="mb-3">
-        <label for="inputFirstName" class="sr-only">Imię</label>
-        <input  id="inputFirstName" class="form-control" placeholder="Imię" required="">
-      </div>
-      
-      <div class="mb-3">
-        <label for="inputSecondName" class="sr-only">Nazwisko</label>
-        <input  id="inputSecondName" class="form-control" placeholder="Nazwisko" required="">
-      </div>
+<div>
+  <form [formGroup]="registerForm" class="form-signin" (ngSubmit)="onSubmit()">
+    <h1 class="h3 mb-3 font-weight-normal">Zarejestruj się do systemu</h1>
+    <div class="mb-3">
+      <label for="email" class="sr-only ms-0">Email address</label>
+      <input type="email" name="email" class="form-control" placeholder="Email address" required autofocus
+        formControlName="email">
+    </div>
 
-      <div class="mb-3">
-        <label for="inputPassword" class="sr-only">Hasło</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Hasło" required="">
-      </div>
-      
-      
-   
-      <div class="text-center">
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Zarejestruj</button>
-      </div>
-    </form>
+    <div class="mb-3">
+      <label for="firstname" class="sr-only">Imię</label>
+      <input name="firstname" class="form-control" placeholder="Imię" formControlName="firstname">
+    </div>
+
+    <div class="mb-3">
+      <label for="secondName" class="sr-only">Nazwisko</label>
+      <input name="secondName" class="form-control" placeholder="Nazwisko" formControlName="secondName">
+    </div>
+
+    <div class="mb-3">
+      <label for="password" class="sr-only">Hasło</label>
+      <input type="password" name="password" class="form-control" placeholder="Hasło" formControlName="password">
+    </div>
+
+    <div class="mb-3">
+      <input type="radio" class="form-check-input" name="type" value="student" formControlName="type">
+      <label for="tacher" class="sr-only form-check-label">Student</label>
+    </div>
+
+    <div class="mb-3">
+      <input type="radio" class="form-check-input" name="type" value="teacher" formControlName="type">
+      <label for="tacher" class="sr-only form-check-label">Teacher</label>
+    </div>
+
+    <div class="mb-3" *ngIf="registerForm.controls['type'].value=='student'">
+      <label for="nick" class="sr-only">Nick</label>
+      <input name="nick" class="form-control" placeholder="Nick" formControlName="nick">
+    </div>
+
+    <div class="mb-3" *ngIf="registerForm.controls['type'].value=='student'">
+      <label for="github" class="sr-only">Github Repository</label>
+      <input name="github" class="form-control" placeholder="https://github.com/..." formControlName="github">
+    </div>
+
+    <div class="text-center">
+      <button class="btn btn-lg btn-primary btn-block" type="submit"
+        [disabled]="!registerForm.valid">Zarejestruj</button>
+    </div>
+  </form>
 </div>
