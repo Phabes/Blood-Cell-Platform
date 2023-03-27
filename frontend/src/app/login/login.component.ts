@@ -1,5 +1,6 @@
 import { Component } from '@angular/core'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms'
+import { UserService } from '../services/user.service'
 
 
 @Component({
@@ -9,16 +10,16 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms'
 })
 export class LoginComponent {
   loginForm = this.fb.group({
-    email: ['', Validators.compose([Validators.required, Validators.email])],
-    password: ['', Validators.required],
+    email: ['a@a.pl', Validators.compose([Validators.required, Validators.email])],
+    password: ['123123123', Validators.required],
     rememberMe: ['']
   })
 
 
-  constructor(private fb: FormBuilder) { }
+  constructor(private fb: FormBuilder, private userService: UserService) { }
 
   onSubmit() {
     if (!this.loginForm.invalid)
-      console.log("log in")
+      this.userService.signIn(this.loginForm)
   }
 }

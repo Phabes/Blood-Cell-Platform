@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core'
 import { HttpClient, HttpHeaders } from '@angular/common/http'
 import { Observable, Subject } from 'rxjs'
 import { SERVER_NAME } from 'src/env/env'
+import { FormGroup } from '@angular/forms'
 @Injectable({
   providedIn: 'root'
 })
@@ -15,38 +16,60 @@ export class UserService {
   }
   constructor(private httpClient: HttpClient) { }
 
-  registerStudent(firstName: string, secondName: string, email: string, password: string, nick: string, github: string) {
-    let newStudent = {
-      firstName: firstName,
-      secondName: secondName,
-      email: email,
-      password: password,
-      nick: nick,
-      github: github,
-      role: "student"
+  registerStudent(form: FormGroup) {
+    let newUser = {
+      firstName: form.value.firstName,
+      lastName: form.value.lastName,
+      email: form.value.email,
+      password: form.value.password,
+      nick: form.value.nick,
+      github: form.value.github
     }
-
-    return this.httpClient.post<any>(SERVER_NAME + "/user/student/register", {
-      newUser: newStudent
-    },
-      this.httpOptions
-    )
-
+    fetch(SERVER_NAME + "/user/student/register", {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: "POST",
+      body: JSON.stringify({ newUser: newUser })
+    })
+      .then((res) => console.log(res))
+      .catch(err => console.log(err))
 
   }
 
-  registerTeacher(firstName: string, secondName: string, email: string, password: string) {
-    let newTeacher = {
-      firstName: firstName,
-      secondName: secondName,
-      email: email,
-      password: password,
-      role: "teacher"
+  registerTeacher(form: FormGroup) {
+    let newUser = {
+      firstName: form.value.firstName,
+      lastName: form.value.lastName,
+      email: form.value.email,
+      password: form.value.password
     }
-    return this.httpClient.post<any>(SERVER_NAME + "/user/teacher/register", {
-      newUser: newTeacher
-    },
-      this.httpOptions
-    )
+    fetch(SERVER_NAME + "/user/teacher/register", {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: "POST",
+      body: JSON.stringify({ newUser: newUser })
+    })
+      .then((res) => console.log(res))
+      .catch(err => console.log(err))
+  }
+
+  signIn(form: FormGroup) {
+    let user = {
+      email: form.value.email,
+      password: form.value.password
+    }
+
+    fetch(SERVER_NAME + "/user/login", {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      method: "POST",
+      body: JSON.stringify(user)
+    })
+      .then((res) => res.json())
+      .then(data => console.log(data))
+      .catch(err => console.log(err))
   }
 }
