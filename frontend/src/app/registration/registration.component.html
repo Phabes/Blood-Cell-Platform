@@ -1,6 +1,6 @@
 <div>
   <form [formGroup]="registerForm" class="form-signin" (ngSubmit)="onSubmit()">
-    <h1 class="h3 mb-3 font-weight-normal">Zarejestruj się do systemu</h1>
+    <h1 class="h3 mb-3 font-weight-normal">Sign up!</h1>
     <div class="mb-3">
       <label for="email" class="sr-only ms-0">Email address</label>
       <input type="email" name="email" class="form-control" placeholder="Email address" required autofocus
@@ -8,18 +8,18 @@
     </div>
 
     <div class="mb-3">
-      <label for="firstname" class="sr-only">Imię</label>
-      <input name="firstname" class="form-control" placeholder="Imię" formControlName="firstname">
+      <label for="firstName" class="sr-only">First name</label>
+      <input name="firstName" class="form-control" placeholder="First name" formControlName="firstName">
     </div>
 
     <div class="mb-3">
-      <label for="secondName" class="sr-only">Nazwisko</label>
-      <input name="secondName" class="form-control" placeholder="Nazwisko" formControlName="secondName">
+      <label for="lastName" class="sr-only">Last name</label>
+      <input name="lastName" class="form-control" placeholder="Last name" formControlName="lastName">
     </div>
 
     <div class="mb-3">
-      <label for="password" class="sr-only">Hasło</label>
-      <input type="password" name="password" class="form-control" placeholder="Hasło" formControlName="password">
+      <label for="password" class="sr-only">Password</label>
+      <input type="password" name="password" class="form-control" placeholder="Password" formControlName="password">
     </div>
 
     <div class="mb-3">
@@ -38,13 +38,12 @@
     </div>
 
     <div class="mb-3" *ngIf="registerForm.controls['type'].value=='student'">
-      <label for="github" class="sr-only">Github Repository</label>
+      <label for="github" class="sr-only">GitHub repositorie</label>
       <input name="github" class="form-control" placeholder="https://github.com/..." formControlName="github">
     </div>
 
     <div class="text-center">
-      <button class="btn btn-lg btn-primary btn-block" type="submit"
-        [disabled]="!registerForm.valid">Zarejestruj</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="!registerForm.valid">Sign up</button>
     </div>
   </form>
 </div>

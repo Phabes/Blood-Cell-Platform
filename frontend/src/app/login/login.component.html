@@ -1,6 +1,6 @@
 <div>
   <form class="form-signin" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-    <h1 class="h3 mb-3 font-weight-normal">Zaloguj się do systemu</h1>
+    <h1 class="h3 mb-3 font-weight-normal">Sign in!</h1>
     <div class="mb-3">
       <label for="email" class="sr-only ms-0">Email address</label>
       <input type="email" name="email" class="form-control" placeholder="Email address" formControlName="email"
@@ -12,11 +12,11 @@
     </div>
     <div class="checkbox mb-3">
       <label>
-        <input type="checkbox" value="remember-me" formControlName="rememberMe"> Zapamiętaj mnie
+        <input type="checkbox" value="remember-me" formControlName="rememberMe"> Remember me
       </label>
     </div>
     <div class="text-center">
-      <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="!loginForm.valid">Zaloguj</button>
+      <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="!loginForm.valid">Sign in</button>
     </div>
   </form>
 </div>

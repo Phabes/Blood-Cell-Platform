@@ -8,10 +8,10 @@ import { AbstractControlOptions, FormBuilder, FormGroup, Validators } from '@ang
 })
 export class RegistrationComponent {
   registerForm = this.fb.group({
-    firstname: ['', Validators.required],
-    secondName: ['', Validators.required],
+    firstName: ['', Validators.required],
+    lastName: ['', Validators.required],
     email: ['', Validators.compose([Validators.required, Validators.email])],
-    password: ['', Validators.required],
+    password: ['', Validators.compose([Validators.required, Validators.minLength(8)])],
     type: ['student'],
     nick: [''],
     github: ['']
