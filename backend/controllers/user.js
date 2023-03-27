@@ -3,22 +3,21 @@ const jwt = require("jsonwebtoken")
 const { SECRET, MAX_AGE } = require("../config/config")
 const Student = require("../models/student")
 const Teacher = require("../models/teacher")
-const {
-  validateRegisterCredentials,
-} = require("../validators/registerValidator")
+const { validateRegisterCredentials } = require("../validators/registerValidator")
+
 
 module.exports.registerStudent = async (req, res) => {
   try {
     const { newUser } = req.body
-    // const { isValid, message } = validateRegisterCredentials(newUser);
-    // if (!isValid) {
-    //   const errorMessages = message.join("\r\n");
-    //   res.status(400).json({
-    //     action: "USER_VALIDATION_ERROR",
-    //     errorMessages: errorMessages,
-    //   });
-    //   return;
-    // }
+    const { isValid, message } = validateRegisterCredentials(newUser, "student");
+    if (!isValid) {
+      const errorMessages = message.join("\r\n");
+      res.status(400).json({
+        action: "USER_VALIDATION_ERROR",
+        errorMessages: errorMessages,
+      });
+      return;
+    }
     const checkTeacher = await Teacher.findOne({ email: newUser.email })
     if (checkTeacher != null) {
       res.status(200).json({ action: "USER_EXISTS" })
@@ -53,15 +52,15 @@ module.exports.registerStudent = async (req, res) => {
 module.exports.registerTeacher = async (req, res) => {
   try {
     const { newUser } = req.body
-    // const { isValid, message } = validateRegisterCredentials(newUser);
-    // if (!isValid) {
-    //   const errorMessages = message.join("\r\n");
-    //   res.status(400).json({
-    //     action: "USER_VALIDATION_ERROR",
-    //     errorMessages: errorMessages,
-    //   });
-    //   return;
-    // }
+    const { isValid, message } = validateRegisterCredentials(newUser, "teacher");
+    if (!isValid) {
+      const errorMessages = message.join("\r\n");
+      res.status(400).json({
+        action: "USER_VALIDATION_ERROR",
+        errorMessages: errorMessages,
+      });
+      return;
+    }
     const checkStudent = await Student.findOne({ email: newUser.email })
     if (checkStudent != null) {
       res.status(200).json({ action: "USER_EXISTS" })
