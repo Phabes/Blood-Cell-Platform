@@ -9,19 +9,17 @@ import { RegistrationComponent } from './registration/registration.component';
 import { UserCartComponent } from './user-cart/user-cart.component';
 
 const routes: Routes = [
-  {path: '' ,             component: LoginComponent},
-  {path: 'profil' ,       component: ProfilComponent},
-  {path: 'dashboard' ,    component: DashboardComponent},
-  {path: 'leaderboard' ,  component: LeaderboardComponent},
-  {path: 'registration' , component: RegistrationComponent},
-  { path: 'cart', component: UserCartComponent},
-  {path: 'login', component: LoginComponent}
-  
-  
+  { path: '', component: HomeComponent },
+  { path: 'profil', component: ProfilComponent },
+  { path: 'dashboard', component: DashboardComponent },
+  { path: 'leaderboard', component: LeaderboardComponent },
+  { path: 'registration', component: RegistrationComponent },
+  { path: 'cart', component: UserCartComponent },
+  { path: 'login', component: LoginComponent },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}
