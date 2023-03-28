@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { UserCartComponent } from './user-cart.component';
+import { UserCartComponent } from "./user-cart.component";
 
-describe('UserCartComponent', () => {
+describe("UserCartComponent", () => {
   let component: UserCartComponent;
   let fixture: ComponentFixture<UserCartComponent>;
 
@@ -10,14 +10,14 @@ describe('UserCartComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ UserCartComponent ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(UserCartComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 
 export { Message };
 interface Message {
@@ -9,7 +9,7 @@ interface Message {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class MessagesService {
   items: Message[] = [];
@@ -21,7 +21,7 @@ export class MessagesService {
 
   getItems() {
     return this.http.get<{ date: Date; task: string; points: number }[]>(
-      '../assets/messages.json'
+      "../assets/messages.json"
     );
   }
 

@@ -1,14 +1,14 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { SERVER_NAME } from 'src/env/env';
-import { FormGroup } from '@angular/forms';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { SERVER_NAME } from "src/env/env";
+import { FormGroup } from "@angular/forms";
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class UserService {
   httpOptions = {
     headers: new HttpHeaders({
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     }),
     withCredentials: true,
   };
@@ -23,11 +23,11 @@ export class UserService {
       nick: form.value.nick,
       github: form.value.github,
     };
-    fetch(SERVER_NAME + '/user/student/register', {
+    fetch(SERVER_NAME + "/user/student/register", {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({ newUser: newUser }),
     })
       .then((res) => console.log(res))
@@ -41,11 +41,11 @@ export class UserService {
       email: form.value.email,
       password: form.value.password,
     };
-    fetch(SERVER_NAME + '/user/teacher/register', {
+    fetch(SERVER_NAME + "/user/teacher/register", {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify({ newUser: newUser }),
     })
       .then((res) => console.log(res))
@@ -58,11 +58,11 @@ export class UserService {
       password: form.value.password,
     };
 
-    fetch(SERVER_NAME + '/user/login', {
+    fetch(SERVER_NAME + "/user/login", {
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
-      method: 'POST',
+      method: "POST",
       body: JSON.stringify(user),
     })
       .then((res) => res.json())

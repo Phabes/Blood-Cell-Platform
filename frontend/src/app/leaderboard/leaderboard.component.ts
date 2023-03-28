@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
-import { Observable } from 'rxjs';
-import { LeaderBoardService } from '../services/leaderboard.service';
+import { Component } from "@angular/core";
+import { Observable } from "rxjs";
+import { LeaderBoardService } from "../services/leaderboard.service";
 
 
 
 
 @Component({
-  selector: 'app-leaderboard',
-  templateUrl: './leaderboard.component.html',
-  styleUrls: ['./leaderboard.component.css']
+  selector: "app-leaderboard",
+  templateUrl: "./leaderboard.component.html",
+  styleUrls: ["./leaderboard.component.css"]
 })
 export class LeaderboardComponent {
 

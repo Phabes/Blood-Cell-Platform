@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { ProfilComponent } from './profil.component';
+import { ProfilComponent } from "./profil.component";
 
-describe('ProfilComponent', () => {
+describe("ProfilComponent", () => {
   let component: ProfilComponent;
   let fixture: ComponentFixture<ProfilComponent>;
 
@@ -10,14 +10,14 @@ describe('ProfilComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ ProfilComponent ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(ProfilComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

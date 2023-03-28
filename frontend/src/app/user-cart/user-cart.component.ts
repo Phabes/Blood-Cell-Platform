@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { LeaderBoardService } from '../services/leaderboard.service';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from "@angular/core";
+import { LeaderBoardService } from "../services/leaderboard.service";
+import { ActivatedRoute } from "@angular/router";
 @Component({
-  selector: 'app-user-cart',
-  templateUrl: './user-cart.component.html',
-  styleUrls: ['./user-cart.component.css'],
+  selector: "app-user-cart",
+  templateUrl: "./user-cart.component.html",
+  styleUrls: ["./user-cart.component.css"],
 })
 export class UserCartComponent implements OnInit {
   constructor(
@@ -12,6 +12,6 @@ export class UserCartComponent implements OnInit {
     private leaderboardService: LeaderBoardService
   ) {}
   ngOnInit(): void {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 }

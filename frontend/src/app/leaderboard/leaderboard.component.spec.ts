@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { LeaderboardComponent } from './leaderboard.component';
+import { LeaderboardComponent } from "./leaderboard.component";
 
-describe('LeaderboardComponent', () => {
+describe("LeaderboardComponent", () => {
   let component: LeaderboardComponent;
   let fixture: ComponentFixture<LeaderboardComponent>;
 
@@ -10,14 +10,14 @@ describe('LeaderboardComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ LeaderboardComponent ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(LeaderboardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });

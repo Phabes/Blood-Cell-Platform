@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 
 export { User };
 interface User {
@@ -8,7 +8,7 @@ interface User {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class LeaderBoardService {
   items: User[] = [];
@@ -20,7 +20,7 @@ export class LeaderBoardService {
 
   getItems() {
     return this.http.get<{ nick: string; points: number }[]>(
-      '../assets/users.json'
+      "../assets/users.json"
     );
   }
 

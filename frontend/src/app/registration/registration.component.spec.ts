@@ -1,8 +1,8 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from "@angular/core/testing";
 
-import { RegistrationComponent } from './registration.component';
+import { RegistrationComponent } from "./registration.component";
 
-describe('RegistrationComponent', () => {
+describe("RegistrationComponent", () => {
   let component: RegistrationComponent;
   let fixture: ComponentFixture<RegistrationComponent>;
 
@@ -10,14 +10,14 @@ describe('RegistrationComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [ RegistrationComponent ]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(RegistrationComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it("should create", () => {
     expect(component).toBeTruthy();
   });
 });
