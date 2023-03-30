@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { Observable } from "rxjs";
-import { MessagesService } from "../services/messages.service";
+import { MessagesService } from "../../services/messages.service";
 
 @Component({
   selector: "app-dashboard",

@@ -2,16 +2,19 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { SERVER_NAME } from "src/env/env";
 import { FormGroup } from "@angular/forms";
+import { Student } from "../models/student";
+import { Observable } from "rxjs";
+
+const httpOptions = {
+  headers: new HttpHeaders({
+    "Content-Type": "application/json",
+  }),
+  withCredentials: true,
+};
 @Injectable({
   providedIn: "root",
 })
 export class UserService {
-  httpOptions = {
-    headers: new HttpHeaders({
-      "Content-Type": "application/json",
-    }),
-    withCredentials: true,
-  };
   constructor(private httpClient: HttpClient) {}
 
   registerStudent(form: FormGroup) {
@@ -23,15 +26,16 @@ export class UserService {
       nick: form.value.nick,
       github: form.value.github,
     };
-    fetch(SERVER_NAME + "/user/student/register", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ newUser: newUser }),
-    })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+
+    this.httpClient
+      .post<any>(
+        `${SERVER_NAME}/user/student/register`,
+        { newUser: newUser },
+        httpOptions
+      )
+      .subscribe((data) => {
+        console.log(data);
+      });
   }
 
   registerTeacher(form: FormGroup) {
@@ -41,15 +45,16 @@ export class UserService {
       email: form.value.email,
       password: form.value.password,
     };
-    fetch(SERVER_NAME + "/user/teacher/register", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify({ newUser: newUser }),
-    })
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
+
+    this.httpClient
+      .post<any>(
+        `${SERVER_NAME}/user/teacher/register`,
+        { newUser: newUser },
+        httpOptions
+      )
+      .subscribe((data) => {
+        console.log(data);
+      });
   }
 
   signIn(form: FormGroup) {
@@ -58,15 +63,25 @@ export class UserService {
       password: form.value.password,
     };
 
-    fetch(SERVER_NAME + "/user/login", {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      method: "POST",
-      body: JSON.stringify(user),
-    })
-      .then((res) => res.json())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
+    this.httpClient
+      .post<any>(`${SERVER_NAME}/user/login`, user, httpOptions)
+      .subscribe((data) => {
+        console.log(data);
+      });
+  }
+
+  getStudents(): Observable<Student[]> {
+    return this.httpClient.get<Student[]>(
+      `${SERVER_NAME}/user/students`,
+      httpOptions
+    );
+  }
+
+  getStudentsLastCommitDates(studentsCommitData: any[]): Observable<string[]> {
+    return this.httpClient.post<string[]>(
+      `${SERVER_NAME}/user/students/commits`,
+      { studentsCommitData: studentsCommitData },
+      httpOptions
+    );
   }
 }

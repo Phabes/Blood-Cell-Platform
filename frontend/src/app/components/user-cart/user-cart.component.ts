@@ -1,6 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { LeaderBoardService } from "../services/leaderboard.service";
 import { ActivatedRoute } from "@angular/router";
+import { LeaderBoardService } from "src/app/services/leaderboard.service";
 @Component({
   selector: "app-user-cart",
   templateUrl: "./user-cart.component.html",

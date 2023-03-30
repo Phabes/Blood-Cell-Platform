@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { SECRET, MAX_AGE } = require("../config/config");
+const { SECRET, MAX_AGE, GITHUB_TOKEN } = require("../config/config");
 const Student = require("../models/student");
 const Teacher = require("../models/teacher");
 const {
@@ -133,6 +133,55 @@ module.exports.loginUser = async (req, res) => {
         });
       } else res.status(200).json({ action: "WRONG_PASSWORD" });
     } else res.status(200).json({ action: "USER_DOESNT_EXIST" });
+  } catch (err) {
+    res.status(500).json({ action: "SOMETHING WRONG" });
+  }
+};
+
+module.exports.getStudents = async (req, res) => {
+  try {
+    const students = await Student.find().select({
+      _id: 1,
+      firstName: 1,
+      lastName: 1,
+      email: 1,
+      nick: 1,
+      github: 1,
+    });
+    res.status(200).json(students);
+  } catch (err) {
+    res.status(500).json({ action: "SOMETHING WRONG" });
+  }
+};
+
+module.exports.getCommits = async (req, res) => {
+  try {
+    const { studentsCommitData } = req.body;
+    await Promise.all(
+      studentsCommitData.map((student) => {
+        return fetch(
+          `https://api.github.com/repos/${student.owner}/${student.repo}/commits`,
+          {
+            headers: {
+              Authorization: `token ${GITHUB_TOKEN}`,
+            },
+          }
+        );
+      })
+    )
+      .then((responses) => {
+        return Promise.all(responses.map((response) => response.json()));
+      })
+      .then((responses) => {
+        return responses.map((response) => {
+          if (response[0].commit.author.date)
+            return response[0].commit.author.date;
+          return "Error";
+        });
+      })
+      .then((data) => {
+        res.status(200).json(data);
+      });
   } catch (err) {
     res.status(500).json({ action: "SOMETHING WRONG" });
   }
