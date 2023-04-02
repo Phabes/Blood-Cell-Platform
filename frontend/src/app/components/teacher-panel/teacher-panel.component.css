@@ -1,5 +1,5 @@
 .studentLabel {
-  height: 500px;
+  /* height: 500px; */
 }
 
 #messageWindow {
@@ -12,4 +12,20 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+}
+
+#messageText {
+  width: 400px;
+  margin-bottom: 10px;
+}
+
+#buttons {
+  width: 200px;
+  display: flex;
+  justify-content: space-around;
+}
+
+#buttons > button {
+  width: 80px;
 }

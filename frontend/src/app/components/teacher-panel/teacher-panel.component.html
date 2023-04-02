@@ -4,7 +4,8 @@
   </button>
   <div *ngFor="let student of students; index as i">
     <div class="studentLabel">
-      {{ i }} {{ student.github }} {{ dates[i] }}
+      {{ student.firstName }} {{ student.lastName }} {{ student.github }}
+      {{ dates[i] }}
       <button class="sendToOne" (click)="messageWindowState(true, student)">
         Send
       </button>
@@ -13,7 +14,7 @@
 </div>
 
 <div *ngIf="showMessageWindow" id="messageWindow">
-  <input type="text" (keyup)="messageTextChange($event)" />
+  <input id="messageText" type="text" (keyup)="messageTextChange($event)" />
   <div id="buttons">
     <button (click)="messageWindowState(false, [])">Cancel</button>
     <button (click)="sendMessage()">Send</button>
