@@ -4,7 +4,7 @@ import { LeaderBoardService } from "src/app/services/leaderboard.service";
 import { CsvService } from 'src/app/services/csv.service';
 import { Student } from "src/app/models/student";
 import { UserService } from "src/app/services/user.service";
-import { StudentFilterPipe } from "src/app/student-filter.pipe";
+// import { StudentFilterPipe } from "src/app/student-filter.pipe";
 import { FormControl, NgModel } from "@angular/forms";
 import { ActivitiesService, Cells, Results  } from "src/app/services/activities.service";
 import { leadingComment } from "@angular/compiler";

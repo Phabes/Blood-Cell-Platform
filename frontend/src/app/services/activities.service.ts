@@ -211,7 +211,7 @@ interface Cells{
     nextCategories = mainCategories;
     this.getActivities().subscribe((act) => {
       header_categories[height]=[]
-    for (let i = 0; i < height; i++) {   
+      for (let i = 0; i < height; i++) {   
 
       header_categories[i] = [];
       let tempCategories: Array<String> = [];
@@ -229,29 +229,38 @@ interface Cells{
         console.log(category.name)
        
         category.sub_categories.forEach(id => tempCategories.push(id));
-        category.activities.forEach(id => {
+        // category.activities.forEach(id => {
 
-          console.log(header_categories[height])
+        //   console.log(header_categories[height])
          
-            let activity = act.filter((cat) => {return cat._id === id})[0];
+        //     let activity = act.filter((cat) => {return cat._id === id})[0];
            
-            if(activity != null ){
-            header_categories[height].unshift({
+        //     if(activity != null ){
+        //     header_categories[height].unshift({
         
-                id:activity._id,
-                name:activity.name,
-                row_span: 1,
-                col_span: 1,
+        //         id:activity._id,
+        //         name:activity.name,
+        //         row_span: 1,
+        //         col_span: 1,
               
-              });
-            }
+        //       });
+        //     }
         
-        })
+        // })
 
         })
-      
+
       nextCategories = tempCategories.slice();
-    } 
+    }
+    
+    // add activities in correct order
+    mainCategories.forEach(cat_id => {
+      let cat: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
+      this.fillHeaderActivitiesInfo(cat, categories, act, height, header_categories);
+    })
+
+    console.log(header_categories[height])
+
   })
  
     return {
@@ -262,4 +271,30 @@ interface Cells{
     
     };
   }
+
+  fillHeaderActivitiesInfo(
+    category: Category,
+    categories: Category[],
+    activities: Activity[],
+    height: number,
+    header_categories: Object[][]){
+      category.activities.forEach(id => {
+          let activity = activities.filter((category) => {return category._id === id})[0];
+          if(activity != null ){
+          header_categories[height].push({
+              id:activity._id,
+              name:activity.name,
+              row_span: 1,
+              col_span: 1,
+            });
+          }
+      
+      })
+        category.sub_categories.forEach(cat_id => {
+          let next_cat: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
+          this.fillHeaderActivitiesInfo(next_cat, categories, activities, height, header_categories);
+        })
+    }
+
+
  }
