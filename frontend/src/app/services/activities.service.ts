@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import { SERVER_NAME } from 'src/env/env';
-
-export { Activity };
-interface Activity {
-  date: Date;
-  task: string;
-  points: number;
-}
-
+ 
+ export { Activity };
+ interface Activity {
+  _id: String;
+   name: string;
+   grades: Array<number>;
+   max_points: number;
+ }
+ 
 export { Category };
 interface Category {
   _id: String;
@@ -21,48 +22,73 @@ interface Category {
   sub_categories: Array<String>;
   activities: Array<String>;
 }
-
-@Injectable({
-  providedIn: 'root',
-})
-export class ActivitiesService {
-  items: Activity[] = [];
-  constructor(private http: HttpClient) {}
-
-  addToCart(activity: Activity) {
-    this.items.push(activity);
+ 
+export { Results };
+interface Results{
+      header_width: number,
+      header_height: number,
+      header_cells:  Cells[][],
+}
+export{Cells}
+interface Cells{
+  
+    id: String,
+    name: String,
+    row_span: number,
+    col_span: number
   }
-
-  getItems() {
-    return this.http.get<{ date: Date; task: string; points: number }[]>(
-      '../assets/activities.json'
-    );
-  }
-
-  clearCart() {
-    this.items = [];
-    return this.items;
-  }
+ @Injectable({
+   providedIn: 'root',
+ })
+ export class ActivitiesService {
+   items: Activity[] = [];
+   constructor(private http: HttpClient) {}
+   value: Object | undefined
+   addToCart(activity: Activity) {
+     this.items.push(activity);
+   }
+ 
+   getItems() {
+     return this.http.get<{ date: Date; task: string; points: number }[]>(
+       '../assets/activities.json'
+     );
+   }
+ 
+   clearCart() {
+     this.items = [];
+     return this.items;
+   }
 
   private getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${SERVER_NAME}/category/all`);
   }
+  private getActivities(): Observable<Activity[]> {
+    return this.http.get<Activity[]>(`${SERVER_NAME}/activity/all`);
+  }
+
 
   getHeadersInfo() {
-    this.getCategories().subscribe((categories) => {
+     var subject = new Subject<Results>();
+     this.getCategories().subscribe((categories) => {
       let width: number = 0;
       let height: number = 0;
       let mainCategories: Array<String> = [];
       let subCategories: Array<String> = [];
+      let activities: Array<Activity> = [];
       
+
+      console.log(categories)
       // Get info about root categories and width of the header
       categories.forEach((category: Category) => {
+        console.log(category.activities)
         category.row_span = null;
         category.col_span = null;
         category.level = 0;
         mainCategories.push(category._id);
         subCategories.push(...category.sub_categories);
-        width += category.activities.length;
+        width = category.activities.length;
+      
+        
       });
       mainCategories = mainCategories.filter((name) => {
         return !subCategories.includes(name);
@@ -82,13 +108,13 @@ export class ActivitiesService {
 
       //Traverse over categories tree and get max height
       height = this.computeCategoryMaxHeight(mainCategories, categories);
-
+  
       // Traverse over categories and get cells height
       this.computeCategoryRowSpan(categories, height);
-      
-      console.log(this.getHeaderInfoOutput(mainCategories, categories, height, width));
-      return this.getHeaderInfoOutput(mainCategories, categories, height, width);
+     // console.log(this.getHeaderInfoOutput(mainCategories, categories, height, width))
+      subject.next (this.getHeaderInfoOutput(mainCategories, categories, height, width))
     });
+    return subject.asObservable()
   }
 
   computeCategoryColSpanAndLevel(
@@ -98,6 +124,7 @@ export class ActivitiesService {
   ): number {
     let category: Category = categories.filter((cat) => {return cat._id === id;})[0];
     category.level = Math.max(category.level!, level);
+   // console.log(category.name  , category.col_span)
     if (category.col_span !== null) return category.col_span;
     if (
       category.activities.length === 0 &&
@@ -108,6 +135,7 @@ export class ActivitiesService {
     }
     if (category.activities.length > 0) {
       category.col_span = category.activities.length;
+      //console.log(category.name , category.activities)
       return category.col_span;
     }
 
@@ -118,6 +146,7 @@ export class ActivitiesService {
         categories,
         level + 1
       );
+      //console.log(col_span , cat_id)
     });
 
     category.col_span = col_span;
@@ -134,10 +163,14 @@ export class ActivitiesService {
     while (categoriesWithLevel.length !== 0) {
       let cat_info: { id: String; level: number } =
         categoriesWithLevel.shift()!;
-      height = Math.max(height, cat_info.level);
+      
+      height = Math.max(height, cat_info.level );
       let category: Category = categories.filter((cat) => {
         return cat._id === cat_info.id;
       })[0];
+      if (category.activities.length > 0 ){
+        height =Math.max(height, cat_info.level +1 );
+      } 
       category.sub_categories.forEach((cat_id) =>
         categoriesWithLevel.push({ id: cat_id, level: cat_info.level + 1 })
       );
@@ -147,14 +180,15 @@ export class ActivitiesService {
   }
 
   computeCategoryRowSpan(categories: Category[], height: number) {
+    //console.log(height)
     categories.forEach((category) => {
-      if (category.sub_categories.length > 0) {
+      if (category.sub_categories.length > 0 ) {
         category.row_span = 1;
       } else if (
         category.activities.length > 0 &&
         category.sub_categories.length === 0
       ) {
-        category.row_span = height - category.level! + 1;
+        category.row_span = height - category.level! ;
       } else {
         category.row_span = 0;
       }
@@ -166,7 +200,7 @@ export class ActivitiesService {
     categories: Category[],
     height: number,
     width: number
-  ): Object {
+  ): Results {
     let header_categories: {
       id: String;
       name: String;
@@ -175,26 +209,57 @@ export class ActivitiesService {
     }[][] = [];
     let nextCategories: Array<String> = [];
     nextCategories = mainCategories;
-    for (let i = 0; i < height; i++) {
+    this.getActivities().subscribe((act) => {
+      header_categories[height]=[]
+    for (let i = 0; i < height; i++) {   
+
       header_categories[i] = [];
       let tempCategories: Array<String> = [];
       nextCategories.forEach( cat_id => {
         let category: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
         header_categories[i].push({
+        
           id: cat_id,
           name: category.name,
           row_span: category.row_span!,
           col_span: category.col_span!,
+        
         });
+       
+        console.log(category.name)
+       
         category.sub_categories.forEach(id => tempCategories.push(id));
-      });
-      nextCategories = tempCategories.slice();
-    }
+        category.activities.forEach(id => {
 
+          console.log(header_categories[height])
+         
+            let activity = act.filter((cat) => {return cat._id === id})[0];
+           
+            if(activity != null ){
+            header_categories[height].unshift({
+        
+                id:activity._id,
+                name:activity.name,
+                row_span: 1,
+                col_span: 1,
+              
+              });
+            }
+        
+        })
+
+        })
+      
+      nextCategories = tempCategories.slice();
+    } 
+  })
+ 
     return {
+    
       header_width: width,
       header_height: height,
       header_cells: header_categories,
+    
     };
   }
-}
+ }
