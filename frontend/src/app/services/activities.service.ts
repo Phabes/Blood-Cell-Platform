@@ -77,10 +77,10 @@ interface Cells{
       let activities: Array<Activity> = [];
       
 
-      console.log(categories)
+      //console.log(categories)
       // Get info about root categories and width of the header
       categories.forEach((category: Category) => {
-        console.log(category.activities)
+      //  console.log(category.activities)
         category.row_span = null;
         category.col_span = null;
         category.level = 0;
@@ -226,7 +226,7 @@ interface Cells{
         
         });
        
-        console.log(category.name)
+       // console.log(category.name)
        
         category.sub_categories.forEach(id => tempCategories.push(id));
         // category.activities.forEach(id => {
@@ -259,7 +259,7 @@ interface Cells{
       this.fillHeaderActivitiesInfo(cat, categories, act, height, header_categories);
     })
 
-    console.log(header_categories[height])
+    //console.log(header_categories[height])
 
   })
  
@@ -295,6 +295,7 @@ interface Cells{
           this.fillHeaderActivitiesInfo(next_cat, categories, activities, height, header_categories);
         })
     }
+
 
 
  }

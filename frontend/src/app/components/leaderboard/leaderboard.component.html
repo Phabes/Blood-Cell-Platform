@@ -3,7 +3,7 @@
 
    
       <table class='table  align-middle table-light' *ngIf="value">
-        <tbody>
+        <thead>
 
             <tr   class="border" *ngFor="let data of value; let i = index"> 
               
@@ -13,11 +13,20 @@
 
                 </td>
             </tr>
+          </thead>
+          <tbody>
+            <tr   class="border" *ngFor="let d of grades; let i = index"> 
+              
+              <td  [attr.rowspan]="1"> {{d.nick}}  </td>
+              <td   class="border" *ngFor="let c of d.grades" [attr.colspan]="1" [attr.rowspan]="1">
+                {{ c }}
+
+              </td>
+          </tr>
         </tbody>
     </table>
   
-
-
+  
 
  </div>
  

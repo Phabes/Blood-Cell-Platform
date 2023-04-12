@@ -140,14 +140,15 @@ module.exports.loginUser = async (req, res) => {
 
 module.exports.getStudents = async (req, res) => {
   try {
-    const students = await Student.find().select({
-      _id: 1,
-      firstName: 1,
-      lastName: 1,
-      email: 1,
-      nick: 1,
-      github: 1,
-    });
+    const students = await Student.find()
+    // .select({
+    //   _id: 1,
+    //   firstName: 1,
+    //   lastName: 1,
+    //   email: 1,
+    //   nick: 1,
+    //   github: 1,
+    // });
     res.status(200).json(students);
   } catch (err) {
     res.status(500).json({ action: "SOMETHING WRONG" });
