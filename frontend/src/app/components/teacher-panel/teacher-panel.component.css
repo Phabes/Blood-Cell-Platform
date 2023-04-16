@@ -1,5 +1,13 @@
-.studentLabel {
-  /* height: 500px; */
+#students {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#sendToAll {
+  width: 300px;
+  padding: 10px 0;
+  margin-bottom: 10px;
 }
 
 #messageWindow {
@@ -15,9 +23,16 @@
   flex-direction: column;
 }
 
+#recipients {
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
 #messageText {
   width: 400px;
+  height: 200px;
   margin-bottom: 10px;
+  resize: none;
 }
 
 #buttons {
@@ -28,4 +43,8 @@
 
 #buttons > button {
   width: 80px;
+}
+
+#sendMessage {
+  background-color: rgb(14, 228, 100);
 }

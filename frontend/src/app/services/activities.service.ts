@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 
 export { Activity };
 interface Activity {
@@ -9,7 +9,7 @@ interface Activity {
 }
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class ActivitiesService {
   items: Activity[] = [];
@@ -21,7 +21,7 @@ export class ActivitiesService {
 
   getItems() {
     return this.http.get<{ date: Date; task: string; points: number }[]>(
-      '../assets/activities.json'
+      "../assets/activities.json"
     );
   }
 

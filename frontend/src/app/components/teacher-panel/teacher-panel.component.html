@@ -2,21 +2,56 @@
   <button id="sendToAll" (click)="messageWindowState(true, students)">
     Send message to all students
   </button>
-  <div *ngFor="let student of students; index as i">
-    <div class="studentLabel">
-      {{ student.firstName }} {{ student.lastName }} {{ student.github }}
-      {{ dates[i] }}
-      <button class="sendToOne" (click)="messageWindowState(true, student)">
-        Send
-      </button>
-    </div>
-  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th scope="col"></th>
+        <th scope="col">Nick</th>
+        <th scope="col">Imię</th>
+        <th scope="col">Nazwisko</th>
+        <th scope="col">Github</th>
+        <th scope="col" *ngIf="dates.length != 0">Last Commit</th>
+        <th scope="col">Send Message</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="cart-item" *ngFor="let student of students; index as i">
+        <th scope="row">{{ i + 1 }}</th>
+        <td>{{ student.nick }}</td>
+        <td>{{ student.firstName }}</td>
+        <td>{{ student.lastName }}</td>
+        <td>{{ student.github }}</td>
+        <td *ngIf="dates.length != 0">
+          {{ dates[i].replace("T", " ").replace("Z", "") }}
+        </td>
+        <td>
+          <button
+            class="sendToOne"
+            (click)="messageWindowState(true, [student])"
+          >
+            Send
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </div>
 
 <div *ngIf="showMessageWindow" id="messageWindow">
-  <input id="messageText" type="text" (keyup)="messageTextChange($event)" />
+  <div id="recipients">
+    <div *ngIf="messageTarget.length != 1; else fewRecipients">
+      Total recipients: {{ messageTarget.length }}
+    </div>
+  </div>
+  <textarea id="messageText" (keyup)="messageTextChange($event)"></textarea>
   <div id="buttons">
-    <button (click)="messageWindowState(false, [])">Cancel</button>
-    <button (click)="sendMessage()">Send</button>
+    <button id="sendMessage" (click)="sendMessage()">Send</button>
+    <button id="cancelSend" (click)="messageWindowState(false, [])">
+      Cancel
+    </button>
   </div>
 </div>
+
+<ng-template #fewRecipients>
+  <div>Recipient: {{ messageTarget[0].nick }}</div>
+</ng-template>

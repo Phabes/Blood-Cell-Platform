@@ -4,6 +4,7 @@ import { SERVER_NAME } from "src/env/env";
 import { FormGroup } from "@angular/forms";
 import { Student } from "../models/student";
 import { Observable } from "rxjs";
+import { GithubStudent } from "../models/githubStudent";
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -28,7 +29,7 @@ export class UserService {
     };
 
     this.httpClient
-      .post<any>(
+      .post<null>(
         `${SERVER_NAME}/user/student/register`,
         { newUser: newUser },
         httpOptions
@@ -47,7 +48,7 @@ export class UserService {
     };
 
     this.httpClient
-      .post<any>(
+      .post<null>(
         `${SERVER_NAME}/user/teacher/register`,
         { newUser: newUser },
         httpOptions
@@ -64,7 +65,7 @@ export class UserService {
     };
 
     this.httpClient
-      .post<any>(`${SERVER_NAME}/user/login`, user, httpOptions)
+      .post<null>(`${SERVER_NAME}/user/login`, user, httpOptions)
       .subscribe((data) => {
         console.log(data);
       });
@@ -77,7 +78,9 @@ export class UserService {
     );
   }
 
-  getStudentsLastCommitDates(studentsCommitData: any[]): Observable<string[]> {
+  getStudentsLastCommitDates(
+    studentsCommitData: GithubStudent[]
+  ): Observable<string[]> {
     return this.httpClient.post<string[]>(
       `${SERVER_NAME}/user/students/commits`,
       { studentsCommitData: studentsCommitData },

@@ -1,25 +1,25 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { SERVER_NAME } from 'src/env/env';
-import { Message } from '../models/message';
-import { Student } from '../models/student';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { SERVER_NAME } from "src/env/env";
+import { Message } from "../models/message";
+import { Student } from "../models/student";
 
 const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   }),
   withCredentials: true,
 };
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class MessagesService {
   constructor(private httpClient: HttpClient) {}
 
   sendMessageToAll(message: Message) {
     this.httpClient
-      .post<any>(
+      .post<null>(
         `${SERVER_NAME}/message/all`,
         { message: message },
         httpOptions
@@ -31,7 +31,7 @@ export class MessagesService {
 
   sendMessageToOne(message: Message, receiver: Student) {
     this.httpClient
-      .post<any>(
+      .post<null>(
         `${SERVER_NAME}/message/one`,
         { message: message, receiver: receiver._id },
         httpOptions

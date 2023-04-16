@@ -1,5 +1,5 @@
-  <div class ="mx-5">
-     <table class="table table-hover">
+<div class="mx-5">
+  <table class="table table-hover">
     <thead>
       <tr>
         <th scope="col"></th>
@@ -8,13 +8,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr class="cart-item" *ngFor="let item of shippingCosts | async;  index as i;">
+      <tr
+        class="cart-item"
+        *ngFor="let item of shippingCosts | async; index as i"
+      >
         <th scope="row">{{ i + 1 }}</th>
         <td>{{ item.nick }}</td>
         <td>{{ item.points }}</td>
-       
       </tr>
     </tbody>
   </table>
 </div>
- 
