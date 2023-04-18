@@ -28,13 +28,6 @@ export class LeaderboardComponent {
  
   
    async ngOnInit() {
-  
-  }
-
-
-
-  constructor(private cartService: LeaderBoardService ,private _csvService: CsvService , private userService: UserService , private actService : ActivitiesService) {
-
     this.users$ = this.cartService.getItems();
    
     this.userService.getStudents().subscribe(users => {console.log(users[0]); 
@@ -46,6 +39,13 @@ export class LeaderboardComponent {
        console.log(e.header_cells)
       } 
       );
+  }
+
+
+
+  constructor(private cartService: LeaderBoardService ,private _csvService: CsvService , private userService: UserService , private actService : ActivitiesService) {
+
+   
   
   }
 

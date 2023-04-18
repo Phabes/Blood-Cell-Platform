@@ -25,13 +25,10 @@ interface User {
 export class LeaderBoardService {
   items: Observable<Student[]> 
   value!: Cells[]; 
+
   constructor(private http: HttpClient , private actService : ActivitiesService) {
     this.items = this.getItems()
-    this.actService.getHeadersInfo().subscribe(e =>{
-      this.value = e.header_cells[length-1]
-     
-    } 
-    );
+ 
   }
 
   getItems() {
@@ -50,14 +47,16 @@ export class LeaderBoardService {
         grades: Array<
           number|null
         >; }[] = []
+        this.actService.getHeadersInfo().subscribe(e =>{
+          this.value = e.header_cells[length-1]
       this.items.subscribe(student=>{
         for (let i =0 ; i < student.length ; i++){
           result.push({
             nick: student[i].nick,
             grades: []
           })
-          console.log(student[i] , value , value.length)
-          console.log(value[value.length-1])
+        //  console.log(student[i] , value , value.length)
+        //  console.log(value[value.length-1])
           value[value.length-1].forEach( e =>
             {
               let tmp = null
@@ -69,7 +68,7 @@ export class LeaderBoardService {
                     
                   }   
                   else if (tmp == null){
-                    console.log(student[i].grades[k].activity, e.id)
+              
                     tmp = null
                   }
 
@@ -80,8 +79,8 @@ export class LeaderBoardService {
         }
         
       })
-
-      console.log(result)
+    })
+      
       return result
   }
 }
