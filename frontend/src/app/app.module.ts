@@ -14,6 +14,7 @@ import { RegistrationComponent } from "./components/registration/registration.co
 import { ProfilComponent } from "./components/profil/profil.component";
 import { UserCartComponent } from "./components/user-cart/user-cart.component";
 import { TeacherPanelComponent } from "./components/teacher-panel/teacher-panel.component";
+import { ActivitiesComponent } from './components/activities/activities.component';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { TeacherPanelComponent } from "./components/teacher-panel/teacher-panel.
     ProfilComponent,
     UserCartComponent,
     TeacherPanelComponent,
+    ActivitiesComponent,
   ],
   imports: [
     BrowserModule,

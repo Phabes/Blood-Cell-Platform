@@ -1,14 +1,23 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 import { Observable, Subject, tap } from 'rxjs';
 import { SERVER_NAME } from 'src/env/env';
  
+const httpOptions = {
+  headers: new HttpHeaders({
+    'Content-Type': 'application/json',
+  }),
+  withCredentials: true,
+};
+
  export { Activity };
  interface Activity {
   _id: String;
    name: string;
    grades: Array<number>;
    max_points: number;
+   deadline: Date;
+   created_on: Date;
  }
  
 export { Category };
@@ -53,19 +62,67 @@ interface Cells{
        '../assets/activities.json'
      );
    }
+
+   addActivity(data: any) {
+    const newActivity = {
+      name: data.name,
+      max_points: data.maxPoints, 
+      deadline: data.deadline,
+      created_on: new Date(),
+    } as Activity;
+
+    this.http.post<any>(
+      `${SERVER_NAME}/activity/add`,
+      newActivity,
+      httpOptions
+    ).subscribe(response => {
+      const categoryID = data.categoryID;
+      const activityID = response._id;
+      const request = {
+        categoryID: categoryID,
+        activityID: activityID
+      }
+      this.http.post<any>(
+        `${SERVER_NAME}/category/assign`,
+        request,
+        httpOptions
+      ).subscribe(res => {
+        console.log(res);
+      })
+    })
+    
+   }
  
    clearCart() {
      this.items = [];
      return this.items;
    }
 
-  private getCategories(): Observable<Category[]> {
+  getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${SERVER_NAME}/category/all`);
   }
   private getActivities(): Observable<Activity[]> {
     return this.http.get<Activity[]>(`${SERVER_NAME}/activity/all`);
   }
 
+  getMainCategories() {
+    let subject = new Subject<Array<{name: String, id: String}>>();
+    this.getCategories().subscribe((categories) => {
+      let mainCategories: Array<{name: String, id: String}> = [];
+      let subCategories: Array<String> = [];
+
+      categories.forEach((category: Category) => {
+          mainCategories.push({name: category.name, id: category._id});
+          subCategories.push(...category.sub_categories);
+        });
+      mainCategories = mainCategories.filter(({name: name, id: id}) => {
+        return !subCategories.includes(id);
+      });
+
+      subject.next(mainCategories);
+    });
+    return subject.asObservable()
+  }
 
   getHeadersInfo() {
      var subject = new Subject<Results>();
