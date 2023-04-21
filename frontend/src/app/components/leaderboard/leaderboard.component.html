@@ -1,32 +1,43 @@
   <div class ="mx-5">
-    <button (click)="saveDataInCSV('simpleData')">Save simple data array</button>
-
-   
+    <button   class="btn btn-lg btn-primary btn-block" type="submit" (click)="saveDataInCSV('simpleData')">Save simple data array</button>
+    <form [formGroup]="Search" class="form-activity-add row cell.max_points multi-range-field g-3" (ngSubmit)="onSubmit()" >
+      <div class="col-auto  py-2">        
+                
+                <input name="name" type="string" class="form-control"  placeholder="Nick" formControlName="name" />     
+      </div>
+      <div class="col-auto  py-2">                 
+        <input name="minPoints" type="number" class="form-control"  placeholder="min Points"  min="0" formControlName="minPoints"      />     
+      </div>
+      <div class="col-auto  py-2">                 
+        <input name="maxPoints" type="number" class="form-control"  placeholder="max Points" min="1" formControlName="maxPoints"      />     
+      </div>
+      <div class="col-auto px-0 py-2">           
+      <button class="btn  btn-primary mx-0 my-0 " type="submit" >Filter</button>
+    </div>
+  </form>
       <table class='table  align-middle table-light' *ngIf="value">
         <thead>
 
             <tr   class="border" *ngFor="let data of value; let i = index"> 
               
-                <td *ngIf="i == 0" [attr.rowspan]="1000"> Nick  </td>
-                <td   class="border" *ngFor="let cell of data" [attr.colspan]="cell.col_span" [attr.rowspan]="cell.row_span">
-                  {{ cell.name }}
-
+                <td  class= "text-center" *ngIf="i == 0" [attr.rowspan]="1000">Nick</td>
+                <td   class="border  text-center" *ngFor="let cell of data  " [attr.colspan]="cell.col_span" [attr.rowspan]="cell.row_span">
+             
+                  <div  class="row "> <div class="auto-col">{{ cell.name }}</div> <div  class="auto-col" *ngIf="cell.max_points != 0">Max: {{cell.max_points}}</div>  </div>
+                 
+             
                 </td>
             </tr>
           </thead>
           <tbody>
-            <tr   class="border" *ngFor="let d of grades; let i = index"> 
+            <tr   class="border " *ngFor="let d of grades    |  simpleSearch: 'd.nick': SearchNick ; let i = index  "> 
               
-              <td  [attr.rowspan]="1"> {{d.nick}}  </td>
-              <td   class="border" *ngFor="let c of d.grades" [attr.colspan]="1" [attr.rowspan]="1">
+              <td  [attr.rowspan]="1" > {{d.nick}}  </td>
+              <td   class="border text-center" *ngFor="let c of d.grades" [attr.colspan]="1" [attr.rowspan]="1" [style.backgroundColor]=" ( ( c!=null && pointsMax !=null && pointsMin  !=null && pointsMax >=  c  && pointsMin <=  c )  || ( (pointsMin ==null && pointsMax !=null && pointsMax >=  c ) ||  ( pointsMax ==null && pointsMin  !=null  && pointsMin <=  c ) )  )? '#eee00e' : '#eeeeee'">
                 {{ c }}
-
               </td>
           </tr>
         </tbody>
     </table>
-  
-  
-
  </div>
  

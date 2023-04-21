@@ -44,7 +44,8 @@ interface Cells{
     id: String,
     name: String,
     row_span: number,
-    col_span: number
+    col_span: number,
+    max_points: number
   }
  @Injectable({
    providedIn: 'root',
@@ -64,13 +65,13 @@ interface Cells{
    }
 
    addActivity(data: any) {
+  
     const newActivity = {
       name: data.name,
-      max_points: data.maxPoints, 
+      max_points: data.max_points, 
       deadline: data.deadline,
       created_on: new Date(),
     } as Activity;
-
     this.http.post<any>(
       `${SERVER_NAME}/activity/add`,
       newActivity,
@@ -80,7 +81,7 @@ interface Cells{
       const activityID = response._id;
       const request = {
         categoryID: categoryID,
-        activityID: activityID
+        activityID: response._id
       }
       this.http.post<any>(
         `${SERVER_NAME}/category/assign`,
@@ -263,6 +264,7 @@ interface Cells{
       name: String;
       row_span: number;
       col_span: number;
+      max_points: number;
     }[][] = [];
     let nextCategories: Array<String> = [];
     nextCategories = mainCategories;
@@ -280,7 +282,7 @@ interface Cells{
           name: category.name,
           row_span: category.row_span!,
           col_span: category.col_span!,
-        
+          max_points: 0 
         });
        
        // console.log(category.name)
@@ -325,7 +327,7 @@ interface Cells{
       header_width: width,
       header_height: height,
       header_cells: header_categories,
-    
+      
     };
   }
 
@@ -343,6 +345,7 @@ interface Cells{
               name:activity.name,
               row_span: 1,
               col_span: 1,
+              max_points: activity.max_points
             });
           }
       

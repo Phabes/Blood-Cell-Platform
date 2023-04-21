@@ -5,7 +5,7 @@ import { CsvService } from 'src/app/services/csv.service';
 import { Student } from "src/app/models/student";
 import { UserService } from "src/app/services/user.service";
 // import { StudentFilterPipe } from "src/app/student-filter.pipe";
-import { FormControl, NgModel } from "@angular/forms";
+import { FormBuilder, FormControl, NgModel, Validators } from "@angular/forms";
 import { ActivitiesService, Cells, Results  } from "src/app/services/activities.service";
 import { leadingComment } from "@angular/compiler";
 
@@ -19,13 +19,14 @@ import { leadingComment } from "@angular/compiler";
 export class LeaderboardComponent {
   users$!: Observable<Student[]>;
   filteredUsers$: Observable<Student[]> | undefined;
-  pointsMax = new FormControl<number>(1000000);
-  pointsMin = new FormControl<number>(0);
+  pointsMax : number | null| undefined;
+  pointsMin : number | null |undefined;
   data!: Student[]; 
   
   value!: Cells[][];
   grades!: { nick: String; grades: (number | null)[]; }[];
- 
+  SearchNick: any;
+
   
    async ngOnInit() {
     this.users$ = this.cartService.getItems();
@@ -43,15 +44,27 @@ export class LeaderboardComponent {
 
 
 
-  constructor(private cartService: LeaderBoardService ,private _csvService: CsvService , private userService: UserService , private actService : ActivitiesService) {
-
-   
+  constructor(private fb: FormBuilder, private cartService: LeaderBoardService ,private _csvService: CsvService , private userService: UserService , private actService : ActivitiesService) {
   
   }
 
-  getStudentGrades(){
+  Search = this.fb.group(
+    {
+      name: [""],  
+      minPoints: [null],
+      maxPoints : [null]
+    }
+  );
 
-  }
+
+    onSubmit() {
+     
+      this.SearchNick = this.Search.value.name
+      this.pointsMin = this.Search.value.minPoints
+      this.pointsMax = this.Search.value.maxPoints
+      console.log( this.Search.value)
+    }
+
   public saveDataInCSV(name: string): void {
    
   

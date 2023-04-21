@@ -12,7 +12,7 @@ import { ActivitiesComponent } from "./components/activities/activities.componen
 
 const routes: Routes = [
   { path: "", component: HomeComponent },
-  { path: "profil", component: ProfilComponent },
+  { path: "profile", component: ProfilComponent },
   { path: "dashboard", component: DashboardComponent },
   { path: "leaderboard", component: LeaderboardComponent },
   { path: "activities", component: ActivitiesComponent },
