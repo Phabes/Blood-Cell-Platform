@@ -24,8 +24,18 @@ export class LeaderboardComponent {
   data!: Student[]; 
   
   value!: Cells[][];
-  grades!: { nick: String; grades: (number | null)[]; }[];
+  grades!: { nick: String; grades: (number | null)[]}[];
  
+
+  async change(student_name: String, new_grade: number | null, j:number) {
+  //  const j = 0;
+  //  const student_name = "Huan";
+  //  const new_grade = 5;
+    if (new_grade){
+      const act = this.value[4][j].id; // 4 temporary index because activies are 4-th category
+      this.userService.changeGrade(student_name, new_grade , act);
+    }
+  }
   
    async ngOnInit() {
     this.users$ = this.cartService.getItems();
@@ -52,6 +62,8 @@ export class LeaderboardComponent {
   getStudentGrades(){
 
   }
+
+
   public saveDataInCSV(name: string): void {
    
   

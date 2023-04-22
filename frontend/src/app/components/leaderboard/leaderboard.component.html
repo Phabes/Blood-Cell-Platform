@@ -18,8 +18,10 @@
             <tr   class="border" *ngFor="let d of grades; let i = index"> 
               
               <td  [attr.rowspan]="1"> {{d.nick}}  </td>
-              <td   class="border" *ngFor="let c of d.grades" [attr.colspan]="1" [attr.rowspan]="1">
-                {{ c }}
+              <td   class="border" *ngFor="let c of d.grades; let j = index" [attr.colspan]="1" [attr.rowspan]="1">
+                
+
+                 <input type="text" value={{c}} style="height: 100%; width: 80%;" ng-model="text" (ng-change)="change(d.nick, c, j)"> 
 
               </td>
           </tr>

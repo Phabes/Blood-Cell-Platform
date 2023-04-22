@@ -187,3 +187,28 @@ module.exports.getCommits = async (req, res) => {
     res.status(500).json({ action: "SOMETHING WRONG" });
   }
 };
+
+module.exports.changeGrade = async (req, res) => {
+  try {
+    const student = await Student.findOne({nick: req.body.nick});
+    if(student){
+      var grades = student.grades;
+      var index = grades.findIndex(e => e.activity.valueOf() === req.body.act);
+      if (index >= 0){
+        grades[index].grade = req.body.grade;
+        await Student.updateOne({nick: req.body.nick}, {grades: grades});
+        res.status(200).json(grades);
+      } else { // activity not found so we need to add new one
+        grades.push({grade: req.body.grade, activity: req.act});
+        await Student.updateOne({nick: req.body.nick}, {grades: grades});
+        res.status(200).json(grades);
+      }
+    } else { // student not found
+      res.status(500).json({action: "student not found"});
+    }
+  }
+  catch (err){
+    res.status(500).json({action: "something wrong"});
+  }
+};
+
