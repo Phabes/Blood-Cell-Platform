@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SECRET, MAX_AGE, GITHUB_TOKEN } = require("../config/config");
 const Student = require("../models/student");
+const mongoose = require("mongoose");
 const Teacher = require("../models/teacher");
 const {
   validateRegisterCredentials,
@@ -199,7 +200,8 @@ module.exports.changeGrade = async (req, res) => {
         await Student.updateOne({nick: req.body.nick}, {grades: grades});
         res.status(200).json(grades);
       } else { // activity not found so we need to add new one
-        grades.push({grade: req.body.grade, activity: req.act});
+        var id = new mongoose.Types.ObjectId(req.body.act);
+        grades.push({grade: req.body.grade, activity: id});
         await Student.updateOne({nick: req.body.nick}, {grades: grades});
         res.status(200).json(grades);
       }
