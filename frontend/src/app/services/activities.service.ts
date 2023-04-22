@@ -84,7 +84,7 @@ interface Cells{
         activityID: response._id
       }
       this.http.post<any>(
-        `${SERVER_NAME}/category/assign`,
+        `${SERVER_NAME}/category/assign_activity`,
         request,
         httpOptions
       ).subscribe(res => {
