@@ -21,7 +21,7 @@
               <td   class="border" *ngFor="let c of d.grades; let j = index" [attr.colspan]="1" [attr.rowspan]="1">
                 
 
-                 <input type="text" value={{c}} style="height: 100%; width: 80%;" ng-model="text" (ng-change)="change(d.nick, c, j)"> 
+                 <input type="text" value={{c}} style="height: 100%; width: 80%;"  ng-model="text" (keydown.enter)="change($event, d.nick, c, j)"> 
 
               </td>
           </tr>
