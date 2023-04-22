@@ -2,6 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SECRET, MAX_AGE, GITHUB_TOKEN } = require("../config/config");
 const Student = require("../models/student");
+const Activity = require("../models/activity");
 const mongoose = require("mongoose");
 const Teacher = require("../models/teacher");
 const {
@@ -192,21 +193,34 @@ module.exports.getCommits = async (req, res) => {
 module.exports.changeGrade = async (req, res) => {
   try {
     const student = await Student.findOne({nick: req.body.nick});
-    if(student){
+    const id = new mongoose.Types.ObjectId(req.body.act);
+
+    var studentId = student._id;
+    const activity = await Activity.findOne({_id: id});
+
+    if(student && activity){
       var grades = student.grades;
       var index = grades.findIndex(e => e.activity.valueOf() === req.body.act);
       if (index >= 0){
         grades[index].grade = req.body.grade;
-        await Student.updateOne({nick: req.body.nick}, {grades: grades});
-        res.status(200).json(grades);
       } else { // activity not found so we need to add new one
-        var id = new mongoose.Types.ObjectId(req.body.act);
         grades.push({grade: req.body.grade, activity: id});
-        await Student.updateOne({nick: req.body.nick}, {grades: grades});
-        res.status(200).json(grades);
       }
+      await Student.updateOne({nick: req.body.nick}, {grades: grades});
+      // update also activites db
+      
+      var grades_ = activity.grades;
+      var index_ = grades_.findIndex(e => e.student_id.valueOf() === studentId.valueOf());
+      if (index_ >= 0 ){
+        grades_[index_].grade = req.body.grade;
+      } else {
+        grades_.push({student_id: studentId, grade: req.body.grade});
+      }
+      await Activity.updateOne({_id: id}, {grades: grades_});
+
+      res.status(200).json(grades);
     } else { // student not found
-      res.status(500).json({action: "student not found"});
+      res.status(500).json({action: "student or activity not found"});
     }
   }
   catch (err){
