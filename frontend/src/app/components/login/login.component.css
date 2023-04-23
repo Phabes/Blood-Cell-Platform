@@ -8,3 +8,10 @@
 h1 {
     text-align: center;
 }
+.error-message {
+    width: 100%;
+    text-align: center;
+    font-size: 1.5em;
+    padding: 0;
+    margin: 0;
+}

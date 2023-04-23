@@ -16,12 +16,14 @@ module.exports.registerStudent = async (req, res) => {
     );
     if (!isValid) {
       const errorMessages = message.join("\r\n");
-      res.status(400).json({
+      console.log(errorMessages);
+      res.status(200).json({
         action: "USER_VALIDATION_ERROR",
         errorMessages: errorMessages,
       });
       return;
     }
+    
     const checkTeacher = await Teacher.findOne({ email: newUser.email });
     if (checkTeacher != null) {
       res.status(200).json({ action: "USER_EXISTS" });
@@ -30,6 +32,7 @@ module.exports.registerStudent = async (req, res) => {
 
     const checkStudent = await Student.findOne({ email: newUser.email });
     if (checkStudent == null) {
+      console.log("student not null");
       const user = new Student(newUser);
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(user.password, salt);
@@ -53,6 +56,7 @@ module.exports.registerStudent = async (req, res) => {
 
 module.exports.registerTeacher = async (req, res) => {
   try {
+
     const { newUser } = req.body;
     const { isValid, message } = validateRegisterCredentials(
       newUser,
@@ -103,7 +107,7 @@ module.exports.loginUser = async (req, res) => {
       const auth = await bcrypt.compare(password, student.password);
       if (auth) {
         const token = jwt.sign(
-          { id: student._id, role: student.role },
+          { id: student._id, role: "student" },
           SECRET,
           { expiresIn: MAX_AGE }
         );
@@ -121,7 +125,7 @@ module.exports.loginUser = async (req, res) => {
       const auth = await bcrypt.compare(password, teacher.password);
       if (auth) {
         const token = jwt.sign(
-          { id: teacher._id, role: teacher.role },
+          { id: teacher._id, role: "teacher" },
           SECRET,
           { expiresIn: MAX_AGE }
         );
@@ -185,4 +189,32 @@ module.exports.getCommits = async (req, res) => {
   } catch (err) {
     res.status(500).json({ action: "SOMETHING WRONG" });
   }
+};
+
+
+
+module.exports.findUser = async (req, res)=>{
+  const {role, _id} = res.locals;
+  if(role == "teacher"){
+    const teacher = await Teacher.findById(_id);
+    res.status(200).json({
+      action:"VERIFIED",
+      email: teacher.email,
+      role: role,
+    });
+  } else if (role == "student") {
+    const student = await Student.findById(_id);
+    res.status(200).json({
+      action: "VERIFIED",
+      email: student.email,
+      role: role,
+    });
+  }else{
+    res.status(200).json({ action: "NOT_PERMISSIONED_USER" });
+  }
+};
+
+module.exports.logoutUser = async (req, res) => {
+  res.cookie("token", "", { httpOnly: true, maxAge: 1 });
+  res.status(200).json({ action: "USER_LOGOUT" });
 };

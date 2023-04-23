@@ -57,6 +57,7 @@
         type="submit"
         routerLink="login"
         routerLinkActive="active"
+        *ngIf="!loggedIn"
       >
         Sign in
       </button>
@@ -65,8 +66,16 @@
         type="submit"
         routerLink="registration"
         routerLinkActive="active"
+        *ngIf="!loggedIn"
       >
         Sign up
+      </button>
+      <button 
+       class="d-flex btn btn-outline-success m-1"
+       (click)="logout()"
+       *ngIf="loggedIn"
+       >
+        Log out
       </button>
     </div>
   </div>
