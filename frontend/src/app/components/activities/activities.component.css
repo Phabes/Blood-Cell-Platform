@@ -1,0 +1,14 @@
+.form-activity-add {
+    width: 100%;
+    max-width: 400px;
+    padding: 15px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  input[type="radio"] {
+    margin-right: 0.4em;
+  }

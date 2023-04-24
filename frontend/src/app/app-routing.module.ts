@@ -8,12 +8,16 @@ import { ProfilComponent } from "./components/profil/profil.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
 import { TeacherPanelComponent } from "./components/teacher-panel/teacher-panel.component";
 import { UserCartComponent } from "./components/user-cart/user-cart.component";
+import { CategoriesComponent } from "./components/categories/categories.component";
+import { ActivitiesComponent } from "./components/activities/activities.component";
 
 const routes: Routes = [
   { path: "", component: HomeComponent },
-  { path: "profil", component: ProfilComponent },
+  { path: "profile", component: ProfilComponent },
   { path: "dashboard", component: DashboardComponent },
   { path: "leaderboard", component: LeaderboardComponent },
+  { path: "activities", component: ActivitiesComponent },
+  { path: "categories", component: CategoriesComponent },
   { path: "teacherpanel", component: TeacherPanelComponent },
   { path: "registration", component: RegistrationComponent },
   { path: "cart", component: UserCartComponent },

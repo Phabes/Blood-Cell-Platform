@@ -87,4 +87,12 @@ export class UserService {
       httpOptions
     );
   }
+
+  changeGrade(nick:String, grade:number, act:String){
+    this.httpClient
+      .post<any>(`${SERVER_NAME}/user/students/changes`, {nick: nick, grade: grade, act:act}, httpOptions)
+      .subscribe((data) => {
+        console.log(data);
+      });
+  }
 }
