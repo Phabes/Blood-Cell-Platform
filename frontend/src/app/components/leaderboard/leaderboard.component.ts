@@ -31,11 +31,14 @@ export class LeaderboardComponent {
   //  const j = 0;
   //  const student_name = "Huan";
   //  const new_grade = 5;
-  console.log(event.target.value, student_name , j)
+  console.log(event.target.value, student_name , j);
     if (event.target.value){
-      const act = this.value[4][j].id; // 4 temporary index because activies are 4-th category
+      var idx = this.value.length;
+      const act = this.value[idx-1][j].id; // 
       this.userService.changeGrade(student_name, event.target.value , act);
     }
+
+
     this.userService.getStudents().subscribe(users => {console.log(users[0]); 
       this.data = users});
   
