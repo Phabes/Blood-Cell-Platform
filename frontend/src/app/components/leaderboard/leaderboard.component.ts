@@ -24,7 +24,6 @@ export class LeaderboardComponent {
   data!: Student[]; 
   
   value!: Cells[][];
-<<<<<<< HEAD
   grades!: { nick: String; grades: (number | null)[]; }[];
   SearchNick: any;
 
@@ -50,33 +49,6 @@ export class LeaderboardComponent {
         );
     }
     
-=======
-  grades!: { nick: String; grades: (number | null)[]}[];
- 
-
-  async change(event: any, student_name: String, new_grade: number | null, j:number) {
-  //  const j = 0;
-  //  const student_name = "Huan";
-  //  const new_grade = 5;
-  console.log(event.target.value, student_name , j);
-    if (event.target.value){
-      var idx = this.value.length;
-      const act = this.value[idx-1][j].id; // 
-      this.userService.changeGrade(student_name, event.target.value , act);
-    }
-
-
-    this.userService.getStudents().subscribe(users => {console.log(users[0]); 
-      this.data = users});
-  
-      this.actService.getHeadersInfo().subscribe(e =>{
-        this.value = e.header_cells
-       this.grades = this.cartService.studentGrades( e.header_cells)
-       console.log(e.header_cells)
-      } 
-      );
-  }
->>>>>>> scoring-activities
   
    async ngOnInit() {
     this.users$ = this.cartService.getItems();
@@ -115,12 +87,7 @@ export class LeaderboardComponent {
       console.log( this.Search.value)
     }
 
-<<<<<<< HEAD
-=======
-  }
 
-
->>>>>>> scoring-activities
   public saveDataInCSV(name: string): void {
    
   
