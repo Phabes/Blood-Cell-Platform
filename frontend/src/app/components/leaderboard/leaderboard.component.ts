@@ -101,7 +101,7 @@ export class LeaderboardComponent {
    
 
 
-    let csvContent = this._csvService.saveDataInCSV(this.data);
+    let csvContent = this._csvService.saveDataInCSV(this.data, this.grades, this.value[this.value.length-1]);
 
     var hiddenElement = document.createElement('a');
     hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvContent);
