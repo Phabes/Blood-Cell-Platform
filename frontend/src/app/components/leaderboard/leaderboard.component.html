@@ -1,5 +1,5 @@
   <div class ="mx-5">
-    <button   class="btn btn-lg btn-primary btn-block" type="submit" (click)="saveDataInCSV('simpleData')">Save simple data array</button>
+    <button   class="btn btn-lg btn-primary btn-block" type="submit" (click)="saveDataInCSV('simpleData')">Save students list to csv</button>
     <form [formGroup]="Search" class="form-activity-add row cell.max_points multi-range-field g-3" (ngSubmit)="onSubmit()" >
       <div class="col-auto  py-2">        
                 
@@ -15,7 +15,7 @@
       <button class="btn  btn-primary mx-0 my-0 " type="submit" >Filter</button>
     </div>
   </form>
-      <table class='table  align-middle table-light' *ngIf="value">
+      <table id="data_table" class='table  align-middle table-light' *ngIf="value">
         <thead>
 
             <tr   class="border" *ngFor="let data of value; let i = index"> 
