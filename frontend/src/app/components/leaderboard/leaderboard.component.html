@@ -33,8 +33,8 @@
             <tr   class="border " *ngFor="let d of grades    |  simpleSearch: 'd.nick': SearchNick ; let i = index  "> 
               
               <td  [attr.rowspan]="1" > {{d.nick}}  </td>
-              <td   class="border text-center" *ngFor="let c of d.grades" [attr.colspan]="1" [attr.rowspan]="1" [style.backgroundColor]=" ( ( c!=null && pointsMax !=null && pointsMin  !=null && pointsMax >=  c  && pointsMin <=  c )  || ( (pointsMin ==null && pointsMax !=null && pointsMax >=  c ) ||  ( pointsMax ==null && pointsMin  !=null  && pointsMin <=  c ) )  )? '#eee00e' : '#eeeeee'">
-                {{ c }}
+              <td   class="border text-center" *ngFor="let c of d.grades ; let j = index" [attr.colspan]="1" [attr.rowspan]="1">
+                <input type="text"   value={{c}}  ng-model="text" (keydown.enter)="change($event, d.nick, c, j)"  [style.backgroundColor]=" ( ( c!=null && pointsMax !=null && pointsMin  !=null && pointsMax >=  c  && pointsMin <=  c )  || ( (pointsMin ==null && pointsMax !=null && pointsMax >=  c ) ||  ( pointsMax ==null && pointsMin  !=null  && pointsMin <=  c ) )  )? '#eee00e' : '#eeeeee'"> 
               </td>
           </tr>
         </tbody>

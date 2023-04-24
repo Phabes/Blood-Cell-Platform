@@ -27,6 +27,28 @@ export class LeaderboardComponent {
   grades!: { nick: String; grades: (number | null)[]; }[];
   SearchNick: any;
 
+
+  
+  async change(event: any, student_name: String, new_grade: number | null, j:number) {
+    //  const j = 0;
+    //  const student_name = "Huan";
+    //  const new_grade = 5;
+    console.log(event.target.value, student_name , j)
+      if (event.target.value){
+        const act = this.value[4][j].id; // 4 temporary index because activies are 4-th category
+        this.userService.changeGrade(student_name, event.target.value , act);
+      }
+      this.userService.getStudents().subscribe(users => {console.log(users[0]); 
+        this.data = users});
+    
+        this.actService.getHeadersInfo().subscribe(e =>{
+          this.value = e.header_cells
+         this.grades = this.cartService.studentGrades( e.header_cells)
+         console.log(e.header_cells)
+        } 
+        );
+    }
+    
   
    async ngOnInit() {
     this.users$ = this.cartService.getItems();
