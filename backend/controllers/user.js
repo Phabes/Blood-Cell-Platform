@@ -174,9 +174,12 @@ module.exports.getCommits = async (req, res) => {
       })
       .then((responses) => {
         return responses.map((response) => {
-          if (response[0].commit.author.date)
-            return response[0].commit.author.date;
-          return "Error";
+          if (response[0])
+            if (response[0].commit)
+              if (response[0].commit.author)
+                if (response[0].commit.author.date)
+                  return response[0].commit.author.date;
+          return "Invalid Student Github Link";
         });
       })
       .then((data) => {
