@@ -8,6 +8,23 @@
   width: 300px;
   padding: 10px 0;
   margin-bottom: 10px;
+  background-color: rgb(14, 228, 100);
+  border-radius: 5px;
+}
+
+#sendToAll:hover {
+  background-color: rgb(34, 135, 75);
+  color: #ffffff;
+}
+
+.sendToOne {
+  background-color: rgb(14, 228, 100);
+  border-radius: 5px;
+}
+
+.sendToOne:hover {
+  background-color: rgb(34, 135, 75);
+  color: #ffffff;
 }
 
 #messageWindow {
@@ -47,4 +64,9 @@
 
 #sendMessage {
   background-color: rgb(14, 228, 100);
+}
+
+#sendMessage:hover {
+  background-color: rgb(34, 135, 75);
+  color: #ffffff;
 }
