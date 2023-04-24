@@ -1,12 +1,12 @@
 .form-signin {
-    width: 100%;
-    max-width: 400px;
-    padding: 15px;
-    margin: 0 auto;
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  margin: 0 auto;
 }
 
 h1 {
-    text-align: center;
+  text-align: center;
 }
 
 input[type="radio"] {

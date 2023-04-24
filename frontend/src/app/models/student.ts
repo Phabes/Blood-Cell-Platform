@@ -5,4 +5,9 @@ export interface Student {
   nick: string;
   email: string;
   github: string;
+  messages: Array<Object>;
+  grades: Array<{
+    activity: string,
+    grade: number | null
+  }>
 }

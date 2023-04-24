@@ -1,32 +1,43 @@
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { SERVER_NAME } from "src/env/env";
+import { Message } from "../models/message";
+import { Student } from "../models/student";
 
-export { Message };
-interface Message {
-  date: Date;
-  task: string;
-  points: number;
-}
+const httpOptions = {
+  headers: new HttpHeaders({
+    "Content-Type": "application/json",
+  }),
+  withCredentials: true,
+};
 
 @Injectable({
   providedIn: "root",
 })
 export class MessagesService {
-  items: Message[] = [];
-  constructor(private http: HttpClient) {}
+  constructor(private httpClient: HttpClient) {}
 
-  addToCart(message: Message) {
-    this.items.push(message);
+  sendMessageToAll(message: Message) {
+    this.httpClient
+      .post<null>(
+        `${SERVER_NAME}/message/all`,
+        { message: message },
+        httpOptions
+      )
+      .subscribe((data) => {
+        console.log(data);
+      });
   }
 
-  getItems() {
-    return this.http.get<{ date: Date; task: string; points: number }[]>(
-      "../assets/messages.json"
-    );
-  }
-
-  clearCart() {
-    this.items = [];
-    return this.items;
+  sendMessageToOne(message: Message, receiver: Student) {
+    this.httpClient
+      .post<null>(
+        `${SERVER_NAME}/message/one`,
+        { message: message, receiver: receiver._id },
+        httpOptions
+      )
+      .subscribe((data) => {
+        console.log(data);
+      });
   }
 }

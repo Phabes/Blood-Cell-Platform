@@ -9,14 +9,21 @@ import { UserService } from "src/app/services/user.service";
 })
 export class HeaderComponent {
   loggedIn = false;
+  isTeacher = true;
   constructor(private userService: UserService, private router:Router){
 
     this.userService.getUser().subscribe((user)=>{
-      console.log(user);
-      if(user.email && user.role)
+      if(user.email && user.role){
+        console.log(user);
         this.loggedIn = true;
-      else
+        if (user.role=="teacher")
+          this.isTeacher = true;
+        else
+          this.isTeacher = false;
+      }else{
         this.loggedIn = false;
+        this.isTeacher = false;
+      }
     });
   }
 

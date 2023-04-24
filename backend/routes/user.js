@@ -6,7 +6,8 @@ const {
   getStudents,
   getCommits,
   findUser,
-  logoutUser
+  logoutUser,
+  changeGrade
 } = require("../controllers/user");
 const { requireAuth } = require("../middleware/authMiddleware");
 
@@ -19,6 +20,6 @@ router.post("/logout", logoutUser);
 router.get("/students", getStudents);
 router.post("/students/commits", getCommits);
 router.post("/authUser", requireAuth, findUser);
-
+router.post("/students/changes", changeGrade);
 
 module.exports = router;

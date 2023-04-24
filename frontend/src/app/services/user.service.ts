@@ -6,6 +6,7 @@ import { Observable, Subject } from "rxjs";
 import { User } from "../models/user";
 import { Student } from "../models/student";
 import { Router } from "@angular/router";
+import { GithubStudent } from "../models/githubStudent";
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -101,11 +102,21 @@ export class UserService {
     );
   }
 
-  getStudentsLastCommitDates(studentsCommitData: any[]): Observable<string[]> {
+  getStudentsLastCommitDates(
+    studentsCommitData: GithubStudent[]
+  ): Observable<string[]> {
     return this.httpClient.post<string[]>(
       `${SERVER_NAME}/user/students/commits`,
       { studentsCommitData: studentsCommitData },
       httpOptions
     );
+  }
+
+  changeGrade(nick: string, grade: number, act: string){
+    this.httpClient
+      .post<any>(`${SERVER_NAME}/user/students/changes`, {nick: nick, grade: grade, act:act}, httpOptions)
+      .subscribe((data) => {
+        console.log(data);
+      });
   }
 }

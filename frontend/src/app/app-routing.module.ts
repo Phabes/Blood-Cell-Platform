@@ -9,10 +9,14 @@ import { RegistrationComponent } from "./components/registration/registration.co
 import { TeacherPanelComponent } from "./components/teacher-panel/teacher-panel.component";
 import { UserCartComponent } from "./components/user-cart/user-cart.component";
 import { LoggedGuard, PermissionsGuard } from "./guards/permissions.guard";
+import { CategoriesComponent } from "./components/categories/categories.component";
+import { ActivitiesComponent } from "./components/activities/activities.component";
 
 const routes: Routes = [
   { path: "", component: HomeComponent },
   { path: "profil", component: ProfilComponent, canActivate: [LoggedGuard(true)]},
+  { path: "categories", component: CategoriesComponent, canActivate: [PermissionsGuard(["teacher"])] },
+  { path: "activities", component: ActivitiesComponent, canActivate: [PermissionsGuard(["teacher"])] },
   { path: "dashboard", component: DashboardComponent, canActivate: [PermissionsGuard(["teacher"])] },
   { path: "leaderboard", component: LeaderboardComponent, canActivate: [PermissionsGuard(["student"])] },
   { path: "teacherpanel", component: TeacherPanelComponent, canActivate: [PermissionsGuard(["teacher"])] },
