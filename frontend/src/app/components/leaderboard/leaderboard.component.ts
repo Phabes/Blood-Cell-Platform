@@ -36,8 +36,13 @@ export class LeaderboardComponent {
     console.log(event.target.value, student_name , j);
       if (event.target.value){
         var idx = this.value.length;
-        const act = this.value[idx-1][j].id; // 
+        const act = this.value[idx-1][j].id;
+        const max_points = this.value[idx-1][j].max_points;
+        if (event.target.value >= 0 && event.target.value <= max_points ){
         this.userService.changeGrade(student_name, event.target.value , act);
+        } else {
+            window.alert("Podano niewłaściwą ilość punktów");
+        }
       }
   
   
