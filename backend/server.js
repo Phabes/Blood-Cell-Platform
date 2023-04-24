@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const userRoute = require("./routes/user");
+const messageRoute = require("./routes/message");
 
 const { CONNECTION_URL } = require("./config/config");
 const PORT = process.env.PORT || 4000;
@@ -17,6 +18,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/user", userRoute);
+app.use("/message", messageRoute);
 
 mongoose
   .connect(CONNECTION_URL, {

@@ -1,6 +1,6 @@
 import { Component } from "@angular/core";
 import { Observable } from "rxjs";
-import { MessagesService } from "../../services/messages.service";
+import { ActivitiesService } from "src/app/services/activities.service";
 
 @Component({
   selector: "app-dashboard",
@@ -11,7 +11,7 @@ export class DashboardComponent {
   messages!: Observable<{ date: Date; task: string; points: number }[]>;
 
   ngOnInit(): void {
-    this.messages = this.messagesService.getItems();
+    this.messages = this.activitiesService.getItems();
   }
-  constructor(private messagesService: MessagesService) {}
+  constructor(private activitiesService: ActivitiesService) {}
 }

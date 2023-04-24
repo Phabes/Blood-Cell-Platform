@@ -3,47 +3,98 @@
     <h1 class="h3 mb-3 font-weight-normal">Sign up!</h1>
     <div class="mb-3">
       <label for="email" class="sr-only ms-0">Email address</label>
-      <input type="email" name="email" class="form-control" placeholder="Email address" required autofocus
-        formControlName="email">
+      <input
+        type="email"
+        name="email"
+        class="form-control"
+        placeholder="Email address"
+        required
+        autofocus
+        formControlName="email"
+      />
     </div>
 
     <div class="mb-3">
       <label for="firstName" class="sr-only">First name</label>
-      <input name="firstName" class="form-control" placeholder="First name" formControlName="firstName">
+      <input
+        name="firstName"
+        class="form-control"
+        placeholder="First name"
+        formControlName="firstName"
+      />
     </div>
 
     <div class="mb-3">
       <label for="lastName" class="sr-only">Last name</label>
-      <input name="lastName" class="form-control" placeholder="Last name" formControlName="lastName">
+      <input
+        name="lastName"
+        class="form-control"
+        placeholder="Last name"
+        formControlName="lastName"
+      />
     </div>
 
     <div class="mb-3">
       <label for="password" class="sr-only">Password</label>
-      <input type="password" name="password" class="form-control" placeholder="Password" formControlName="password">
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        placeholder="Password"
+        formControlName="password"
+      />
     </div>
 
     <div class="mb-3">
-      <input type="radio" class="form-check-input" name="type" value="student" formControlName="type">
+      <input
+        type="radio"
+        class="form-check-input"
+        name="type"
+        value="student"
+        formControlName="type"
+      />
       <label for="tacher" class="sr-only form-check-label">Student</label>
     </div>
 
     <div class="mb-3">
-      <input type="radio" class="form-check-input" name="type" value="teacher" formControlName="type">
+      <input
+        type="radio"
+        class="form-check-input"
+        name="type"
+        value="teacher"
+        formControlName="type"
+      />
       <label for="tacher" class="sr-only form-check-label">Teacher</label>
     </div>
 
-    <div class="mb-3" *ngIf="registerForm.controls['type'].value=='student'">
+    <div class="mb-3" *ngIf="registerForm.controls['type'].value == 'student'">
       <label for="nick" class="sr-only">Nick</label>
-      <input name="nick" class="form-control" placeholder="Nick" formControlName="nick">
+      <input
+        name="nick"
+        class="form-control"
+        placeholder="Nick"
+        formControlName="nick"
+      />
     </div>
 
-    <div class="mb-3" *ngIf="registerForm.controls['type'].value=='student'">
+    <div class="mb-3" *ngIf="registerForm.controls['type'].value == 'student'">
       <label for="github" class="sr-only">GitHub repositorie</label>
-      <input name="github" class="form-control" placeholder="https://github.com/..." formControlName="github">
+      <input
+        name="github"
+        class="form-control"
+        placeholder="https://github.com/..."
+        formControlName="github"
+      />
     </div>
 
     <div class="text-center">
-      <button class="btn btn-lg btn-primary btn-block" type="submit" [disabled]="!registerForm.valid">Sign up</button>
+      <button
+        class="btn btn-lg btn-primary btn-block"
+        type="submit"
+        [disabled]="!registerForm.valid"
+      >
+        Sign up
+      </button>
     </div>
   </form>
 </div>

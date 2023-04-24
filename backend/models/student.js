@@ -7,6 +7,7 @@ const studentSchema = mongoose.Schema({
   password: String,
   nick: String,
   github: String,
+  messages: Array,
 });
 
 const Student = mongoose.model("Student", studentSchema, "students");
