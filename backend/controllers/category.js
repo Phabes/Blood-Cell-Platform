@@ -41,7 +41,7 @@ module.exports.assignActivity = async (req, res) => {
   try {
       const {categoryID, activityID} = req.body;
       await Category.findByIdAndUpdate(categoryID, {
-        $addToSet: { activities: activityID},
+        $addToSet: { activities: Object(activityID)},
       });
       res.status(200).json({
         action: "ACTIVITY CORRECTLY ASSIGNED"

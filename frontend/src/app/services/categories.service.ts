@@ -81,8 +81,8 @@ interface Cells{
       const above_categoryID = data.categoryID;
       const categoryID = response._id;
       const request = {
-        above_categoryID: above_categoryID,
-        categoryID: response._id
+        categoryID: above_categoryID,
+        subcategoryID: categoryID 
       }
       this.http.post<any>(
         `${SERVER_NAME}/category/assign_subcategory`,
