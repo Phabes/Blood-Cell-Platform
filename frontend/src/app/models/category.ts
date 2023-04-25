@@ -4,7 +4,7 @@ export interface Category {
   created_on: Date;
   col_span: number | null;
   row_span: number | null;
-  level: number | null;
+  level: number;
   sub_categories: Array<string>;
   activities: Array<string>;
 }

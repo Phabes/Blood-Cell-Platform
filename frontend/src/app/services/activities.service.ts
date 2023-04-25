@@ -5,6 +5,7 @@ import { SERVER_NAME } from "src/env/env";
 import { Activity } from "../models/activity";
 import { Result } from "../models/result";
 import { Category } from "../models/category";
+import { Cell } from "../models/cell";
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -18,8 +19,8 @@ const httpOptions = {
 })
 export class ActivitiesService {
   items: Activity[] = [];
+
   constructor(private http: HttpClient) {}
-  value: object | undefined;
 
   addToCart(activity: Activity) {
     this.items.push(activity);
@@ -80,7 +81,7 @@ export class ActivitiesService {
         mainCategories.push({ name: category.name, id: category._id });
         subCategories.push(...category.sub_categories);
       });
-      mainCategories = mainCategories.filter(({ name: name, id: id }) => {
+      mainCategories = mainCategories.filter(({ id: id }) => {
         return !subCategories.includes(id);
       });
 
@@ -96,7 +97,6 @@ export class ActivitiesService {
       let height = 0;
       let mainCategories: Array<string> = [];
       const subCategories: Array<string> = [];
-      const activities: Array<Activity> = [];
 
       // Get info about root categories and width of the header
       categories.forEach((category: Category) => {
@@ -143,7 +143,8 @@ export class ActivitiesService {
     const category: Category = categories.filter((cat) => {
       return cat._id === id;
     })[0];
-    category.level = Math.max(category.level!, level);
+    category.level = Math.max(category.level, level);
+    // console.log(category.name  , category.col_span)
     if (category.col_span !== null) return category.col_span;
     if (
       category.activities.length === 0 &&
@@ -206,7 +207,7 @@ export class ActivitiesService {
         category.activities.length > 0 &&
         category.sub_categories.length === 0
       ) {
-        category.row_span = height - category.level!;
+        category.row_span = height - category.level;
       } else {
         category.row_span = 0;
       }
@@ -281,7 +282,7 @@ export class ActivitiesService {
     categories: Category[],
     activities: Activity[],
     height: number,
-    header_categories: Object[][]
+    header_categories: Cell[][]
   ) {
     category.activities.forEach((id) => {
       const activity = activities.filter((category) => {

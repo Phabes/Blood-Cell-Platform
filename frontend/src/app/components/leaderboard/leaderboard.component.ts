@@ -1,5 +1,5 @@
-import { Component, NgModule } from "@angular/core";
-import { combineLatest, map, Observable } from "rxjs";
+import { Component } from "@angular/core";
+import { Observable } from "rxjs";
 import { LeaderBoardService } from "src/app/services/leaderboard.service";
 import { CsvService } from "src/app/services/csv.service";
 import { Student } from "src/app/models/student";

@@ -6,21 +6,6 @@ import { Observable } from "rxjs";
 import { ActivitiesService } from "./activities.service";
 import { Cell } from "../models/cell";
 
-export { User };
-interface User {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  nick: string;
-  github: string;
-  messages: Array<Object>;
-  grades: Array<{
-    id: string;
-    grade: number | null;
-  }>;
-}
-
 @Injectable({
   providedIn: "root",
 })
@@ -60,7 +45,7 @@ export class LeaderBoardService {
                 tmp = null;
               }
             }
-            result[i].grades!.push(tmp);
+            result[i].grades.push(tmp);
           });
         }
       });
