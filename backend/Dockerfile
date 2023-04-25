@@ -1,8 +1,9 @@
 FROM node:18-alpine
 
-WORKDIR /app
+WORKDIR /backend
+COPY . /backend
 
-RUN npm install 
+RUN npm install  
 
 EXPOSE 4000
 
