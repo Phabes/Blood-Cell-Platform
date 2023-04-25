@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: "categories", component: CategoriesComponent, canActivate: [PermissionsGuard(["teacher"])] },
   { path: "activities", component: ActivitiesComponent, canActivate: [PermissionsGuard(["teacher"])] },
   { path: "dashboard", component: DashboardComponent, canActivate: [PermissionsGuard(["teacher"])] },
-  { path: "leaderboard", component: LeaderboardComponent, canActivate: [PermissionsGuard(["student"])] },
+  { path: "leaderboard", component: LeaderboardComponent, canActivate: [PermissionsGuard(["teacher"])] },
   { path: "teacherpanel", component: TeacherPanelComponent, canActivate: [PermissionsGuard(["teacher"])] },
   { path: "registration", component: RegistrationComponent, canActivate: [LoggedGuard(false)] },
   { path: "cart", component: UserCartComponent, canActivate: [LoggedGuard(true)] },
