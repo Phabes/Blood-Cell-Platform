@@ -1,22 +1,28 @@
 .form-category-add {
-    width: 100%;
-    max-width: 400px;
-    padding: 15px;
-    margin: 0 auto;
-  }
-  
-  .dropdown ul {
-    width: 100px;
-    display: none;
-    padding: 50px;
-    z-index:1000;
-    position:absolute;
-  }
+  width: 100%;
+  max-width: 400px;
+  padding: 15px;
+  margin: 0 auto;
+}
 
-  h1 {
-    text-align: center;
-  }
-  
-  input[type="radio"] {
-    margin-right: 0.4em;
-  }
+.dropdown ul {
+  width: 100px;
+  display: none;
+  padding: 50px;
+  z-index: 1000;
+  position: absolute;
+}
+
+h1 {
+  text-align: center;
+}
+
+input[type="radio"] {
+  margin-right: 0.4em;
+}
+
+.error-prompt {
+  text-align: center;
+  font-size: large;
+  margin-top: 1em;
+}

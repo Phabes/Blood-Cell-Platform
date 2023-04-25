@@ -1,5 +1,5 @@
 <div id="students">
-  <button id="sendToAll" (click)="messageWindowState(true, students)">
+  <button class="btn btn-primary" (click)="messageWindowState(true, students)">
     Send message to all students
   </button>
   <table class="table table-hover">
@@ -20,13 +20,17 @@
         <td>{{ student.nick }}</td>
         <td>{{ student.firstName }}</td>
         <td>{{ student.lastName }}</td>
-        <td>{{ student.github }}</td>
+        <td>
+          <a href="{{ student.github }}" target="_blank">{{
+            student.github
+          }}</a>
+        </td>
         <td *ngIf="dates.length != 0">
           {{ dates[i].replace("T", " ").replace("Z", "") }}
         </td>
         <td>
           <button
-            class="sendToOne"
+            class="btn btn-primary"
             (click)="messageWindowState(true, [student])"
           >
             Send
@@ -45,8 +49,8 @@
   </div>
   <textarea id="messageText" (keyup)="messageTextChange($event)"></textarea>
   <div id="buttons">
-    <button id="sendMessage" (click)="sendMessage()">Send</button>
-    <button id="cancelSend" (click)="messageWindowState(false, [])">
+    <button class="btn btn-primary" (click)="sendMessage()">Send</button>
+    <button class="btn btn-secondary" (click)="messageWindowState(false, [])">
       Cancel
     </button>
   </div>

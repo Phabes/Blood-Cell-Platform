@@ -25,7 +25,7 @@ module.exports.registerStudent = async (req, res) => {
       });
       return;
     }
-    
+
     const checkTeacher = await Teacher.findOne({ email: newUser.email });
     if (checkTeacher != null) {
       res.status(200).json({ action: "USER_EXISTS" });
@@ -58,7 +58,6 @@ module.exports.registerStudent = async (req, res) => {
 
 module.exports.registerTeacher = async (req, res) => {
   try {
-
     const { newUser } = req.body;
     const { isValid, message } = validateRegisterCredentials(
       newUser,
@@ -108,11 +107,9 @@ module.exports.loginUser = async (req, res) => {
     if (student) {
       const auth = await bcrypt.compare(password, student.password);
       if (auth) {
-        const token = jwt.sign(
-          { id: student._id, role: "student" },
-          SECRET,
-          { expiresIn: MAX_AGE }
-        );
+        const token = jwt.sign({ id: student._id, role: "student" }, SECRET, {
+          expiresIn: MAX_AGE,
+        });
         res.cookie("token", token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
         res.status(200).json({
           action: "STUDENT_LOGGED",
@@ -126,11 +123,9 @@ module.exports.loginUser = async (req, res) => {
     if (teacher) {
       const auth = await bcrypt.compare(password, teacher.password);
       if (auth) {
-        const token = jwt.sign(
-          { id: teacher._id, role: "teacher" },
-          SECRET,
-          { expiresIn: MAX_AGE }
-        );
+        const token = jwt.sign({ id: teacher._id, role: "teacher" }, SECRET, {
+          expiresIn: MAX_AGE,
+        });
         res.cookie("token", token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
         res.status(200).json({
           action: "TEACHER_LOGGED",
@@ -146,7 +141,7 @@ module.exports.loginUser = async (req, res) => {
 
 module.exports.getStudents = async (req, res) => {
   try {
-    const students = await Student.find();
+    const students = await Student.find({}, { password: 0 });
     res.status(200).json(students);
   } catch (err) {
     res.status(500).json({ action: "SOMETHING WRONG" });
@@ -189,14 +184,13 @@ module.exports.getCommits = async (req, res) => {
   }
 };
 
-
-
-module.exports.findUser = async (req, res)=>{
-  const {role, _id} = res.locals;
-  if(role == "teacher"){
+module.exports.findUser = async (req, res) => {
+  const { role, _id } = res.locals;
+  if (role == "teacher") {
     const teacher = await Teacher.findById(_id);
     res.status(200).json({
-      action:"VERIFIED",
+      action: "VERIFIED",
+      _id: _id,
       email: teacher.email,
       role: role,
     });
@@ -204,10 +198,11 @@ module.exports.findUser = async (req, res)=>{
     const student = await Student.findById(_id);
     res.status(200).json({
       action: "VERIFIED",
+      _id: _id,
       email: student.email,
       role: role,
     });
-  }else{
+  } else {
     res.status(200).json({ action: "NOT_PERMISSIONED_USER" });
   }
 };
@@ -216,41 +211,46 @@ module.exports.logoutUser = async (req, res) => {
   res.cookie("token", "", { httpOnly: true, maxAge: 1 });
   res.status(200).json({ action: "USER_LOGOUT" });
 };
+
 module.exports.changeGrade = async (req, res) => {
   try {
-    const student = await Student.findOne({nick: req.body.nick});
+    const student = await Student.findOne({ nick: req.body.nick });
     const id = new mongoose.Types.ObjectId(req.body.act);
 
     var studentId = student._id;
-    const activity = await Activity.findOne({_id: id});
+    const activity = await Activity.findOne({ _id: id });
 
-    if(student && activity){
+    if (student && activity) {
       var grades = student.grades;
-      var index = grades.findIndex(e => e.activity.valueOf() === req.body.act);
-      if (index >= 0){
+      var index = grades.findIndex(
+        (e) => e.activity.valueOf() === req.body.act
+      );
+      if (index >= 0) {
         grades[index].grade = req.body.grade;
-      } else { // activity not found so we need to add new one
-        grades.push({grade: req.body.grade, activity: id});
+      } else {
+        // activity not found so we need to add new one
+        grades.push({ grade: req.body.grade, activity: id });
       }
-      await Student.updateOne({nick: req.body.nick}, {grades: grades});
+      await Student.updateOne({ nick: req.body.nick }, { grades: grades });
       // update also activites db
-      
+
       var grades_ = activity.grades;
-      var index_ = grades_.findIndex(e => e.student_id.valueOf() === studentId.valueOf());
-      if (index_ >= 0 ){
+      var index_ = grades_.findIndex(
+        (e) => e.student_id.valueOf() === studentId.valueOf()
+      );
+      if (index_ >= 0) {
         grades_[index_].grade = req.body.grade;
       } else {
-        grades_.push({student_id: studentId, grade: req.body.grade});
+        grades_.push({ student_id: studentId, grade: req.body.grade });
       }
-      await Activity.updateOne({_id: id}, {grades: grades_});
+      await Activity.updateOne({ _id: id }, { grades: grades_ });
 
       res.status(200).json(grades);
-    } else { // student not found
-      res.status(500).json({action: "student or activity not found"});
+    } else {
+      // student not found
+      res.status(500).json({ action: "student or activity not found" });
     }
-  }
-  catch (err){
-    res.status(500).json({action: "something wrong"});
+  } catch (err) {
+    res.status(500).json({ action: "something wrong" });
   }
 };
-

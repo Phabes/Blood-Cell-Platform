@@ -1,36 +1,46 @@
-import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { SERVER_NAME } from "src/env/env";
-import { FormGroup } from "@angular/forms";
-import { Observable, Subject } from "rxjs";
-import { UserRole } from "../models/userRole";
-import { Student } from "../models/student";
-import { Router } from "@angular/router";
-import { GithubStudent } from "../models/githubStudent";
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { SERVER_NAME } from 'src/env/env';
+import { FormGroup } from '@angular/forms';
+import { Observable, Subject } from 'rxjs';
+import { UserRole } from '../models/userRole';
+import { Student } from '../models/student';
+import { GithubStudent } from '../models/githubStudent';
 
 const httpOptions = {
   headers: new HttpHeaders({
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   }),
   withCredentials: true,
 };
 @Injectable({
-  providedIn: "root",
+  providedIn: 'root',
 })
 export class UserService {
-  user = new Subject<UserRole>();
-  constructor(private httpClient: HttpClient, private router: Router) {
+  user: Subject<UserRole> = new Subject<UserRole>();
+  userID: string = '';
+
+  constructor(private httpClient: HttpClient) {
     this.checkAuth().subscribe((data) => {
-      this.setUser({ email: data.email, role: data.role });
+      this.setUser({
+        _id: data._id,
+        email: data.email,
+        role: data.role,
+      });
     });
   }
 
   setUser(user: UserRole) {
+    this.userID = user._id;
     this.user.next(user);
   }
 
-  getUser() {
+  getUser(): Observable<UserRole> {
     return this.user.asObservable();
+  }
+
+  getUserID(): string {
+    return this.userID;
   }
 
   checkAuth() {

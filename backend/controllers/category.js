@@ -15,7 +15,10 @@ module.exports.addCategory = async (req, res) => {
     const category = req.body;
     const newCategory = new Category(category);
     newCategory.save();
-    res.status(200).json(newCategory);
+    res.status(200).json({
+      action: "CATEGORY CORRECTLY ASSIGNED",
+      category: newCategory,
+    });
   } catch (err) {
     res.status(500).json({ action: "Something wrong" });
   }
