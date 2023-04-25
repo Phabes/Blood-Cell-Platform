@@ -7,7 +7,7 @@ export interface Student {
   github: string;
   messages: Array<Object>;
   grades: Array<{
-    activity: String,
+    activity: string,
     grade: number | null
   }>
 }

@@ -1,18 +1,18 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Observable, Subject, tap } from 'rxjs';
-import { SERVER_NAME } from 'src/env/env';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
+import { Observable, Subject, tap } from "rxjs";
+import { SERVER_NAME } from "src/env/env";
  
 const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   }),
   withCredentials: true,
 };
 
- export { Activity };
+export { Activity };
  interface Activity {
-  _id: String;
+  _id: string;
    name: string;
    grades: Array<number>;
    max_points: number;
@@ -22,14 +22,14 @@ const httpOptions = {
  
 export { Category };
 interface Category {
-  _id: String;
-  name: String;
+  _id: string;
+  name: string;
   created_on: Date;
   col_span: number | null;
   row_span: number | null;
   level: number | null;
-  sub_categories: Array<String>;
-  activities: Array<String>;
+  sub_categories: Array<string>;
+  activities: Array<string>;
 }
  
 export { Results };
@@ -38,33 +38,33 @@ interface Results{
       header_height: number,
       header_cells:  Cells[][],
 }
-export{Cells}
+export{Cells};
 interface Cells{
   
-    id: String,
-    name: String,
+    id: string,
+    name: string,
     row_span: number,
     col_span: number,
     max_points: number
   }
  @Injectable({
-   providedIn: 'root',
+   providedIn: "root",
  })
- export class ActivitiesService {
-   items: Activity[] = [];
-   constructor(private http: HttpClient) {}
-   value: Object | undefined
-   addToCart(activity: Activity) {
-     this.items.push(activity);
-   }
+export class ActivitiesService {
+  items: Activity[] = [];
+  constructor(private http: HttpClient) {}
+  value: object | undefined;
+  addToCart(activity: Activity) {
+    this.items.push(activity);
+  }
  
-   getItems() {
-     return this.http.get<{ date: Date; task: string; points: number }[]>(
-       '../assets/activities.json'
-     );
-   }
+  getItems() {
+    return this.http.get<{ date: Date; task: string; points: number }[]>(
+      "../assets/activities.json"
+    );
+  }
 
-   addActivity(data: any) {
+  addActivity(data: any) {
   
     const newActivity = {
       name: data.name,
@@ -82,22 +82,22 @@ interface Cells{
       const request = {
         categoryID: categoryID,
         activityID: response._id
-      }
+      };
       this.http.post<any>(
         `${SERVER_NAME}/category/assign_activity`,
         request,
         httpOptions
       ).subscribe(res => {
         console.log(res);
-      })
-    })
+      });
+    });
     
-   }
+  }
  
-   clearCart() {
-     this.items = [];
-     return this.items;
-   }
+  clearCart() {
+    this.items = [];
+    return this.items;
+  }
 
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${SERVER_NAME}/category/all`);
@@ -107,32 +107,32 @@ interface Cells{
   }
 
   getMainCategories() {
-    let subject = new Subject<Array<{name: String, id: String}>>();
+    const subject = new Subject<Array<{name: string, id: string}>>();
     this.getCategories().subscribe((categories) => {
-      let mainCategories: Array<{name: String, id: String}> = [];
-      let subCategories: Array<String> = [];
+      let mainCategories: Array<{name: string, id: string}> = [];
+      const subCategories: Array<string> = [];
 
       categories.forEach((category: Category) => {
-          mainCategories.push({name: category.name, id: category._id});
-          subCategories.push(...category.sub_categories);
-        });
+        mainCategories.push({name: category.name, id: category._id});
+        subCategories.push(...category.sub_categories);
+      });
       mainCategories = mainCategories.filter(({name: name, id: id}) => {
         return !subCategories.includes(id);
       });
 
       subject.next(mainCategories);
     });
-    return subject.asObservable()
+    return subject.asObservable();
   }
 
   getHeadersInfo() {
-     var subject = new Subject<Results>();
-     this.getCategories().subscribe((categories) => {
-      let width: number = 0;
-      let height: number = 0;
-      let mainCategories: Array<String> = [];
-      let subCategories: Array<String> = [];
-      let activities: Array<Activity> = [];
+    const subject = new Subject<Results>();
+    this.getCategories().subscribe((categories) => {
+      let width = 0;
+      let height = 0;
+      let mainCategories: Array<string> = [];
+      const subCategories: Array<string> = [];
+      const activities: Array<Activity> = [];
       
 
       //console.log(categories)
@@ -153,8 +153,8 @@ interface Cells{
       });
 
       // Traverse over categories tree and get info about cells width
-      mainCategories.forEach((cat_id: String) => {
-        let category: Category = categories.filter((cat) => {
+      mainCategories.forEach((cat_id: string) => {
+        const category: Category = categories.filter((cat) => {
           return cat._id === cat_id;
         })[0];
         category.col_span = this.computeCategoryColSpanAndLevel(
@@ -169,20 +169,20 @@ interface Cells{
   
       // Traverse over categories and get cells height
       this.computeCategoryRowSpan(categories, height);
-     // console.log(this.getHeaderInfoOutput(mainCategories, categories, height, width))
-      subject.next (this.getHeaderInfoOutput(mainCategories, categories, height, width))
+      // console.log(this.getHeaderInfoOutput(mainCategories, categories, height, width))
+      subject.next (this.getHeaderInfoOutput(mainCategories, categories, height, width));
     });
-    return subject.asObservable()
+    return subject.asObservable();
   }
 
   computeCategoryColSpanAndLevel(
-    id: String,
+    id: string,
     categories: Category[],
     level: number
   ): number {
-    let category: Category = categories.filter((cat) => {return cat._id === id;})[0];
+    const category: Category = categories.filter((cat) => {return cat._id === id;})[0];
     category.level = Math.max(category.level!, level);
-   // console.log(category.name  , category.col_span)
+    // console.log(category.name  , category.col_span)
     if (category.col_span !== null) return category.col_span;
     if (
       category.activities.length === 0 &&
@@ -197,8 +197,8 @@ interface Cells{
       return category.col_span;
     }
 
-    let col_span: number = 0;
-    category.sub_categories.forEach((cat_id: String) => {
+    let col_span = 0;
+    category.sub_categories.forEach((cat_id: string) => {
       col_span += this.computeCategoryColSpanAndLevel(
         cat_id,
         categories,
@@ -212,18 +212,18 @@ interface Cells{
   }
 
   computeCategoryMaxHeight(
-    mainCategories: Array<String>,
+    mainCategories: Array<string>,
     categories: Category[]
   ): number {
     let height = 0;
-    let categoriesWithLevel: Array<{ id: String; level: number }> = [];
-    mainCategories.forEach((id: String) => categoriesWithLevel.push({ id: id, level: 1 }));
+    const categoriesWithLevel: Array<{ id: string; level: number }> = [];
+    mainCategories.forEach((id: string) => categoriesWithLevel.push({ id: id, level: 1 }));
     while (categoriesWithLevel.length !== 0) {
-      let cat_info: { id: String; level: number } =
+      const cat_info: { id: string; level: number } =
         categoriesWithLevel.shift()!;
       
       height = Math.max(height, cat_info.level );
-      let category: Category = categories.filter((cat) => {
+      const category: Category = categories.filter((cat) => {
         return cat._id === cat_info.id;
       })[0];
       if (category.activities.length > 0 ){
@@ -254,73 +254,73 @@ interface Cells{
   }
 
   getHeaderInfoOutput(
-    mainCategories: Array<String>,
+    mainCategories: Array<string>,
     categories: Category[],
     height: number,
     width: number
   ): Results {
-    let header_categories: {
-      id: String;
-      name: String;
+    const header_categories: {
+      id: string;
+      name: string;
       row_span: number;
       col_span: number;
       max_points: number;
     }[][] = [];
-    let nextCategories: Array<String> = [];
+    let nextCategories: Array<string> = [];
     nextCategories = mainCategories;
     this.getActivities().subscribe((act) => {
-      header_categories[height]=[]
+      header_categories[height]=[];
       for (let i = 0; i < height; i++) {   
 
-      header_categories[i] = [];
-      let tempCategories: Array<String> = [];
-      nextCategories.forEach( cat_id => {
-        let category: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
-        header_categories[i].push({
+        header_categories[i] = [];
+        const tempCategories: Array<string> = [];
+        nextCategories.forEach( cat_id => {
+          const category: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
+          header_categories[i].push({
         
-          id: cat_id,
-          name: category.name,
-          row_span: category.row_span!,
-          col_span: category.col_span!,
-          max_points: 0 
-        });
+            id: cat_id,
+            name: category.name,
+            row_span: category.row_span!,
+            col_span: category.col_span!,
+            max_points: 0 
+          });
        
-       // console.log(category.name)
+          // console.log(category.name)
        
-        category.sub_categories.forEach(id => tempCategories.push(id));
-        // category.activities.forEach(id => {
+          category.sub_categories.forEach(id => tempCategories.push(id));
+          // category.activities.forEach(id => {
 
-        //   console.log(header_categories[height])
+          //   console.log(header_categories[height])
          
-        //     let activity = act.filter((cat) => {return cat._id === id})[0];
+          //     let activity = act.filter((cat) => {return cat._id === id})[0];
            
-        //     if(activity != null ){
-        //     header_categories[height].unshift({
+          //     if(activity != null ){
+          //     header_categories[height].unshift({
         
-        //         id:activity._id,
-        //         name:activity.name,
-        //         row_span: 1,
-        //         col_span: 1,
+          //         id:activity._id,
+          //         name:activity.name,
+          //         row_span: 1,
+          //         col_span: 1,
               
-        //       });
-        //     }
+          //       });
+          //     }
         
-        // })
+          // })
 
-        })
+        });
 
-      nextCategories = tempCategories.slice();
-    }
+        nextCategories = tempCategories.slice();
+      }
     
-    // add activities in correct order
-    mainCategories.forEach(cat_id => {
-      let cat: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
-      this.fillHeaderActivitiesInfo(cat, categories, act, height, header_categories);
-    })
+      // add activities in correct order
+      mainCategories.forEach(cat_id => {
+        const cat: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
+        this.fillHeaderActivitiesInfo(cat, categories, act, height, header_categories);
+      });
 
-    //console.log(header_categories[height])
+      //console.log(header_categories[height])
 
-  })
+    });
  
     return {
     
@@ -337,25 +337,25 @@ interface Cells{
     activities: Activity[],
     height: number,
     header_categories: Object[][]){
-      category.activities.forEach(id => {
-          let activity = activities.filter((category) => {return category._id === id})[0];
-          if(activity != null ){
-          header_categories[height].push({
-              id:activity._id,
-              name:activity.name,
-              row_span: 1,
-              col_span: 1,
-              max_points: activity.max_points
-            });
-          }
+    category.activities.forEach(id => {
+      const activity = activities.filter((category) => {return category._id === id;})[0];
+      if(activity != null ){
+        header_categories[height].push({
+          id:activity._id,
+          name:activity.name,
+          row_span: 1,
+          col_span: 1,
+          max_points: activity.max_points
+        });
+      }
       
-      })
-        category.sub_categories.forEach(cat_id => {
-          let next_cat: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
-          this.fillHeaderActivitiesInfo(next_cat, categories, activities, height, header_categories);
-        })
-    }
+    });
+    category.sub_categories.forEach(cat_id => {
+      const next_cat: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
+      this.fillHeaderActivitiesInfo(next_cat, categories, activities, height, header_categories);
+    });
+  }
 
 
 
- }
+}

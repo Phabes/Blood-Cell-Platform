@@ -6,6 +6,6 @@ const {
 const router = Router();
 
 router.get("/all", getAllActivities);
-router.post("/add", addActivity)
+router.post("/add", addActivity);
 
 module.exports = router;

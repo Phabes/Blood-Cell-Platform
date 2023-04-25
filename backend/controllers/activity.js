@@ -1,13 +1,13 @@
 const Activity = require("../models/activity");
 
 module.exports.getAllActivities = async (req, res) => {
-    try {
-        const activities = await Activity.find()
-        res.status(200).json(activities);
-    } catch (err) {
-      res.status(500).json({ action: "Something wrong" });
-    }
-  };
+  try {
+    const activities = await Activity.find();
+    res.status(200).json(activities);
+  } catch (err) {
+    res.status(500).json({ action: "Something wrong" });
+  }
+};
 
 module.exports.addActivity = async (req, res) => {
   try {
@@ -18,4 +18,4 @@ module.exports.addActivity = async (req, res) => {
   } catch (err) {
     res.status(500).json({ action: "Something wrong" });
   }
-}
+};

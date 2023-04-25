@@ -1,25 +1,25 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
-import { Observable, Subject, tap } from 'rxjs';
-import { SERVER_NAME } from 'src/env/env';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
+import { Observable, Subject, tap } from "rxjs";
+import { SERVER_NAME } from "src/env/env";
  
 const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   }),
   withCredentials: true,
 };
 
 export { Category };
 interface Category {
-  _id: String;
-  name: String;
+  _id: string;
+  name: string;
   created_on: Date;
   col_span: number | null;
   row_span: number | null;
   level: number | null;
-  sub_categories: Array<String>;
-  activities: Array<String>;
+  sub_categories: Array<string>;
+  activities: Array<string>;
 }
  
 export { Results };
@@ -29,46 +29,46 @@ interface Results{
       header_cells:  Cells[][],
 }
 
-export{Cells}
+export{Cells};
 interface Cells{
   
-    id: String,
-    name: String,
+    id: string,
+    name: string,
     row_span: number,
     col_span: number,
     max_points: number
   }
  @Injectable({
-   providedIn: 'root',
+   providedIn: "root",
  })
 
- export class CategoriesService {
-   items: Category[] = [];
-   constructor(private http: HttpClient) {}
-   value: Object | undefined
-   addToCart(category: Category) {
-     this.items.push(category);
-   }
+export class CategoriesService {
+  items: Category[] = [];
+  constructor(private http: HttpClient) {}
+  value: Object | undefined;
+  addToCart(category: Category) {
+    this.items.push(category);
+  }
  
-   getItems() {
-     return this.http.get<{ date: Date; task: string; points: number }[]>(
-       '../assets/categories.json'
-     );
-   }
+  getItems() {
+    return this.http.get<{ date: Date; task: string; points: number }[]>(
+      "../assets/categories.json"
+    );
+  }
 
-   addCategory_noAboveCategoryChosen(data: any) {
+  addCategory_noAboveCategoryChosen(data: any) {
     const newCategory = {
-        name: data.name,
-        created_on: new Date(),
+      name: data.name,
+      created_on: new Date(),
     } as Category;
     this.http.post<any>(
       `${SERVER_NAME}/category/add`,
       newCategory,
       httpOptions
-    ).subscribe()
-   }
+    ).subscribe();
+  }
 
-   addCategory_AboveCategoryChosen(data: any) {
+  addCategory_AboveCategoryChosen(data: any) {
     const newCategory = {
       name: data.name,
       created_on: new Date(),
@@ -83,22 +83,22 @@ interface Cells{
       const request = {
         categoryID: above_categoryID,
         subcategoryID: categoryID 
-      }
+      };
       this.http.post<any>(
         `${SERVER_NAME}/category/assign_subcategory`,
         request,
         httpOptions
       ).subscribe(res => {
         console.log(res);
-      })
-    })
+      });
+    });
     
-   }
+  }
  
-   clearCart() {
-     this.items = [];
-     return this.items;
-   }
+  clearCart() {
+    this.items = [];
+    return this.items;
+  }
 
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${SERVER_NAME}/category/all`);
@@ -106,4 +106,4 @@ interface Cells{
 
 
 
- }
+}

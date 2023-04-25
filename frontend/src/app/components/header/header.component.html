@@ -14,7 +14,7 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="loggedIn">
           <a
             class="nav-link active"
             aria-current="page"
@@ -24,16 +24,17 @@
             >Profile</a
           >
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="loggedIn&&isTeacher">
           <a
             class="nav-link"
             href="#"
             routerLink="dashboard"
             routerLinkActive="active"
+            
             >Dashboard</a
           >
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="loggedIn">
           <a
             class="nav-link"
             href="#"
@@ -42,7 +43,7 @@
             >Leaderboard</a
           >
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="loggedIn&&isTeacher">
           <a
             class="nav-link"
             href="#"
@@ -51,7 +52,7 @@
             >Add category</a
           >
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="loggedIn&&isTeacher">
           <a
             class="nav-link"
             href="#"
@@ -60,7 +61,7 @@
             >Add activity</a
           >
         </li>
-        <li class="nav-item">
+        <li class="nav-item" *ngIf="loggedIn&&isTeacher">
           <a
             class="nav-link"
             href="#"
@@ -75,6 +76,7 @@
         type="submit"
         routerLink="login"
         routerLinkActive="active"
+        *ngIf="!loggedIn"
       >
         Sign in
       </button>
@@ -83,8 +85,16 @@
         type="submit"
         routerLink="registration"
         routerLinkActive="active"
+        *ngIf="!loggedIn"
       >
         Sign up
+      </button>
+      <button 
+       class="d-flex btn btn-outline-success m-1"
+       (click)="logout()"
+       *ngIf="loggedIn"
+       >
+        Log out
       </button>
     </div>
   </div>

@@ -14,7 +14,7 @@ import { RegistrationComponent } from "./components/registration/registration.co
 import { ProfilComponent } from "./components/profil/profil.component";
 import { UserCartComponent } from "./components/user-cart/user-cart.component";
 import { TeacherPanelComponent } from "./components/teacher-panel/teacher-panel.component";
-import { ActivitiesComponent } from './components/activities/activities.component';
+import { ActivitiesComponent } from "./components/activities/activities.component";
 import { CategoriesComponent } from "./components/categories/categories.component";
 import { SimpleSearchPipe } from "./simple-search.pipe";
 

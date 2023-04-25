@@ -1,17 +1,17 @@
-import { Component } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators, AbstractControlOptions, } from '@angular/forms';
-import { ActivitiesService, Category } from 'src/app/services/activities.service';
+import { Component } from "@angular/core";
+import { FormArray, FormBuilder, FormGroup, Validators, AbstractControlOptions, } from "@angular/forms";
+import { ActivitiesService, Category } from "src/app/services/activities.service";
 
 @Component({
-  selector: 'app-activities',
-  templateUrl: './activities.component.html',
-  styleUrls: ['./activities.component.css']
+  selector: "app-activities",
+  templateUrl: "./activities.component.html",
+  styleUrls: ["./activities.component.css"]
 })
 export class ActivitiesComponent {
-  mainCategories!: Array<{name: String, id: String}>;
+  mainCategories!: Array<{name: string, id: string}>;
   categories!: Category[];
-  selectedCategories: String[] = [];
-  canBeAssigned: Boolean = false;
+  selectedCategories: string[] = [];
+  canBeAssigned = false;
 
   constructor(private fb: FormBuilder, private actService : ActivitiesService) {
     this.actService.getMainCategories().subscribe(categories =>{
@@ -21,7 +21,7 @@ export class ActivitiesComponent {
 
     this.actService.getCategories().subscribe(categories => {
       this.categories = categories;
-    })
+    });
   }
 
   activityForm = this.fb.group(
@@ -45,7 +45,7 @@ export class ActivitiesComponent {
       max_points: this.activityForm.value.maxPoints, 
       deadline: this.activityForm.value.deadline,
       categoryID: categoryID
-    }
+    };
     this.actService.addActivity(data);
   }
 
@@ -53,7 +53,7 @@ export class ActivitiesComponent {
     return this.activityForm.get("category") as FormArray;
   }
 
-  getSubCategories(name: String) {
+  getSubCategories(name: string) {
     const subCategoriesIds = this.categories
       .filter(category => {
         return category.name === name;
@@ -66,14 +66,14 @@ export class ActivitiesComponent {
     return this.categories.filter(cat => {
       return subCategoriesIds.includes(cat._id);
     })
-    .map(cat => {
-      return cat.name;
-    })
+      .map(cat => {
+        return cat.name;
+      });
   }
 
   setCanBeAssigned(i: number) {
     const last_cat = this.categories
-    .find(cat => cat.name === this.selectedCategories[i]);
+      .find(cat => cat.name === this.selectedCategories[i]);
     if (!last_cat){
       this.canBeAssigned = false;
       return;
@@ -82,7 +82,7 @@ export class ActivitiesComponent {
   }
 
   handleCategorySelection(event: any, i: number){
-    let selectedCategoryName = event.target.value;
+    const selectedCategoryName = event.target.value;
     this.selectedCategories[i] = selectedCategoryName;
     this.clearTrailingCategories(i);
     this.setCanBeAssigned(i);

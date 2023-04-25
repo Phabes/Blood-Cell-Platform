@@ -2,8 +2,10 @@ import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { SERVER_NAME } from "src/env/env";
 import { FormGroup } from "@angular/forms";
+import { Observable, Subject } from "rxjs";
+import { User } from "../models/user";
 import { Student } from "../models/student";
-import { Observable } from "rxjs";
+import { Router } from "@angular/router";
 import { GithubStudent } from "../models/githubStudent";
 
 const httpOptions = {
@@ -16,7 +18,30 @@ const httpOptions = {
   providedIn: "root",
 })
 export class UserService {
-  constructor(private httpClient: HttpClient) {}
+
+  user = new Subject<User>();
+  constructor(private httpClient: HttpClient, private router:Router) {
+    this.checkAuth().subscribe((data)=>{
+      this.setUser({email:data.email,role:data.role});
+
+    });
+  }
+
+  setUser(user:User){
+    this.user.next(user);
+  }
+
+  getUser(){
+    return this.user.asObservable();
+  }
+
+  checkAuth(){
+    return this.httpClient.post<any>(
+      `${SERVER_NAME}/user/authUser`,
+      {},
+      httpOptions
+    );
+  }
 
   registerStudent(form: FormGroup) {
     const newUser = {
@@ -28,15 +53,12 @@ export class UserService {
       github: form.value.github,
     };
 
-    this.httpClient
-      .post<null>(
+    return this.httpClient
+      .post<any>(
         `${SERVER_NAME}/user/student/register`,
         { newUser: newUser },
         httpOptions
-      )
-      .subscribe((data) => {
-        console.log(data);
-      });
+      );
   }
 
   registerTeacher(form: FormGroup) {
@@ -47,15 +69,12 @@ export class UserService {
       password: form.value.password,
     };
 
-    this.httpClient
-      .post<null>(
+    return this.httpClient
+      .post<any>(
         `${SERVER_NAME}/user/teacher/register`,
         { newUser: newUser },
         httpOptions
-      )
-      .subscribe((data) => {
-        console.log(data);
-      });
+      );
   }
 
   signIn(form: FormGroup) {
@@ -64,11 +83,16 @@ export class UserService {
       password: form.value.password,
     };
 
-    this.httpClient
-      .post<null>(`${SERVER_NAME}/user/login`, user, httpOptions)
-      .subscribe((data) => {
-        console.log(data);
-      });
+    return this.httpClient
+      .post<any>(`${SERVER_NAME}/user/login`, user, httpOptions);
+  }
+
+  logout(){
+    return this.httpClient.post<any>(
+      `${SERVER_NAME}/user/logout`,
+      {},
+      httpOptions
+    );
   }
 
   getStudents(): Observable<Student[]> {
@@ -88,7 +112,7 @@ export class UserService {
     );
   }
 
-  changeGrade(nick:String, grade:number, act:String){
+  changeGrade(nick: string, grade: number, act: string){
     this.httpClient
       .post<any>(`${SERVER_NAME}/user/students/changes`, {nick: nick, grade: grade, act:act}, httpOptions)
       .subscribe((data) => {
