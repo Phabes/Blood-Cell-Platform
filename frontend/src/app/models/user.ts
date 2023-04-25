@@ -1,4 +1,4 @@
-export interface User{
-    email:string,
-    role:string
+export interface User {
+  email: string;
+  role: string;
 }

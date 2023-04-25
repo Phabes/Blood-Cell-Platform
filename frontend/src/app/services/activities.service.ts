@@ -1,8 +1,11 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
-import { Observable, Subject, tap } from "rxjs";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, Subject } from "rxjs";
 import { SERVER_NAME } from "src/env/env";
- 
+import { Activity } from "../models/activity";
+import { Result } from "../models/result";
+import { Category } from "../models/category";
+
 const httpOptions = {
   headers: new HttpHeaders({
     "Content-Type": "application/json",
@@ -10,46 +13,9 @@ const httpOptions = {
   withCredentials: true,
 };
 
-export { Activity };
- interface Activity {
-  _id: string;
-   name: string;
-   grades: Array<number>;
-   max_points: number;
-   deadline: Date;
-   created_on: Date;
- }
- 
-export { Category };
-interface Category {
-  _id: string;
-  name: string;
-  created_on: Date;
-  col_span: number | null;
-  row_span: number | null;
-  level: number | null;
-  sub_categories: Array<string>;
-  activities: Array<string>;
-}
- 
-export { Results };
-interface Results{
-      header_width: number,
-      header_height: number,
-      header_cells:  Cells[][],
-}
-export{Cells};
-interface Cells{
-  
-    id: string,
-    name: string,
-    row_span: number,
-    col_span: number,
-    max_points: number
-  }
- @Injectable({
-   providedIn: "root",
- })
+@Injectable({
+  providedIn: "root",
+})
 export class ActivitiesService {
   items: Activity[] = [];
   constructor(private http: HttpClient) {}
@@ -57,7 +23,7 @@ export class ActivitiesService {
   addToCart(activity: Activity) {
     this.items.push(activity);
   }
- 
+
   getItems() {
     return this.http.get<{ date: Date; task: string; points: number }[]>(
       "../assets/activities.json"
@@ -65,35 +31,33 @@ export class ActivitiesService {
   }
 
   addActivity(data: any) {
-  
     const newActivity = {
       name: data.name,
-      max_points: data.max_points, 
+      max_points: data.max_points,
       deadline: data.deadline,
       created_on: new Date(),
     } as Activity;
-    this.http.post<any>(
-      `${SERVER_NAME}/activity/add`,
-      newActivity,
-      httpOptions
-    ).subscribe(response => {
-      const categoryID = data.categoryID;
-      const activityID = response._id;
-      const request = {
-        categoryID: categoryID,
-        activityID: response._id
-      };
-      this.http.post<any>(
-        `${SERVER_NAME}/category/assign_activity`,
-        request,
-        httpOptions
-      ).subscribe(res => {
-        console.log(res);
+    this.http
+      .post<any>(`${SERVER_NAME}/activity/add`, newActivity, httpOptions)
+      .subscribe((response) => {
+        const categoryID = data.categoryID;
+        const activityID = response._id;
+        const request = {
+          categoryID: categoryID,
+          activityID: response._id,
+        };
+        this.http
+          .post<any>(
+            `${SERVER_NAME}/category/assign_activity`,
+            request,
+            httpOptions
+          )
+          .subscribe((res) => {
+            console.log(res);
+          });
       });
-    });
-    
   }
- 
+
   clearCart() {
     this.items = [];
     return this.items;
@@ -107,16 +71,16 @@ export class ActivitiesService {
   }
 
   getMainCategories() {
-    const subject = new Subject<Array<{name: string, id: string}>>();
+    const subject = new Subject<Array<{ name: string; id: string }>>();
     this.getCategories().subscribe((categories) => {
-      let mainCategories: Array<{name: string, id: string}> = [];
+      let mainCategories: Array<{ name: string; id: string }> = [];
       const subCategories: Array<string> = [];
 
       categories.forEach((category: Category) => {
-        mainCategories.push({name: category.name, id: category._id});
+        mainCategories.push({ name: category.name, id: category._id });
         subCategories.push(...category.sub_categories);
       });
-      mainCategories = mainCategories.filter(({name: name, id: id}) => {
+      mainCategories = mainCategories.filter(({ name: name, id: id }) => {
         return !subCategories.includes(id);
       });
 
@@ -126,27 +90,24 @@ export class ActivitiesService {
   }
 
   getHeadersInfo() {
-    const subject = new Subject<Results>();
+    const subject = new Subject<Result>();
     this.getCategories().subscribe((categories) => {
       let width = 0;
       let height = 0;
       let mainCategories: Array<string> = [];
       const subCategories: Array<string> = [];
       const activities: Array<Activity> = [];
-      
 
       //console.log(categories)
       // Get info about root categories and width of the header
       categories.forEach((category: Category) => {
-      //  console.log(category.activities)
+        //  console.log(category.activities)
         category.row_span = null;
         category.col_span = null;
         category.level = 0;
         mainCategories.push(category._id);
         subCategories.push(...category.sub_categories);
         width = category.activities.length;
-      
-        
       });
       mainCategories = mainCategories.filter((name) => {
         return !subCategories.includes(name);
@@ -166,11 +127,13 @@ export class ActivitiesService {
 
       //Traverse over categories tree and get max height
       height = this.computeCategoryMaxHeight(mainCategories, categories);
-  
+
       // Traverse over categories and get cells height
       this.computeCategoryRowSpan(categories, height);
       // console.log(this.getHeaderInfoOutput(mainCategories, categories, height, width))
-      subject.next (this.getHeaderInfoOutput(mainCategories, categories, height, width));
+      subject.next(
+        this.getHeaderInfoOutput(mainCategories, categories, height, width)
+      );
     });
     return subject.asObservable();
   }
@@ -180,7 +143,9 @@ export class ActivitiesService {
     categories: Category[],
     level: number
   ): number {
-    const category: Category = categories.filter((cat) => {return cat._id === id;})[0];
+    const category: Category = categories.filter((cat) => {
+      return cat._id === id;
+    })[0];
     category.level = Math.max(category.level!, level);
     // console.log(category.name  , category.col_span)
     if (category.col_span !== null) return category.col_span;
@@ -217,18 +182,20 @@ export class ActivitiesService {
   ): number {
     let height = 0;
     const categoriesWithLevel: Array<{ id: string; level: number }> = [];
-    mainCategories.forEach((id: string) => categoriesWithLevel.push({ id: id, level: 1 }));
+    mainCategories.forEach((id: string) =>
+      categoriesWithLevel.push({ id: id, level: 1 })
+    );
     while (categoriesWithLevel.length !== 0) {
       const cat_info: { id: string; level: number } =
         categoriesWithLevel.shift()!;
-      
-      height = Math.max(height, cat_info.level );
+
+      height = Math.max(height, cat_info.level);
       const category: Category = categories.filter((cat) => {
         return cat._id === cat_info.id;
       })[0];
-      if (category.activities.length > 0 ){
-        height =Math.max(height, cat_info.level +1 );
-      } 
+      if (category.activities.length > 0) {
+        height = Math.max(height, cat_info.level + 1);
+      }
       category.sub_categories.forEach((cat_id) =>
         categoriesWithLevel.push({ id: cat_id, level: cat_info.level + 1 })
       );
@@ -240,13 +207,13 @@ export class ActivitiesService {
   computeCategoryRowSpan(categories: Category[], height: number) {
     //console.log(height)
     categories.forEach((category) => {
-      if (category.sub_categories.length > 0 ) {
+      if (category.sub_categories.length > 0) {
         category.row_span = 1;
       } else if (
         category.activities.length > 0 &&
         category.sub_categories.length === 0
       ) {
-        category.row_span = height - category.level! ;
+        category.row_span = height - category.level!;
       } else {
         category.row_span = 0;
       }
@@ -258,7 +225,7 @@ export class ActivitiesService {
     categories: Category[],
     height: number,
     width: number
-  ): Results {
+  ): Result {
     const header_categories: {
       id: string;
       name: string;
@@ -269,65 +236,69 @@ export class ActivitiesService {
     let nextCategories: Array<string> = [];
     nextCategories = mainCategories;
     this.getActivities().subscribe((act) => {
-      header_categories[height]=[];
-      for (let i = 0; i < height; i++) {   
-
+      header_categories[height] = [];
+      for (let i = 0; i < height; i++) {
         header_categories[i] = [];
         const tempCategories: Array<string> = [];
-        nextCategories.forEach( cat_id => {
-          const category: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
+        nextCategories.forEach((cat_id) => {
+          const category: Category = categories.filter((cat) => {
+            return cat._id === cat_id;
+          })[0];
           header_categories[i].push({
-        
             id: cat_id,
             name: category.name,
             row_span: category.row_span!,
             col_span: category.col_span!,
-            max_points: 0 
+            max_points: 0,
           });
-       
+
           // console.log(category.name)
-       
-          category.sub_categories.forEach(id => tempCategories.push(id));
+
+          category.sub_categories.forEach((id) => tempCategories.push(id));
           // category.activities.forEach(id => {
 
           //   console.log(header_categories[height])
-         
+
           //     let activity = act.filter((cat) => {return cat._id === id})[0];
-           
+
           //     if(activity != null ){
           //     header_categories[height].unshift({
-        
+
           //         id:activity._id,
           //         name:activity.name,
           //         row_span: 1,
           //         col_span: 1,
-              
+
           //       });
           //     }
-        
-          // })
 
+          // })
         });
 
         nextCategories = tempCategories.slice();
       }
-    
+
       // add activities in correct order
-      mainCategories.forEach(cat_id => {
-        const cat: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
-        this.fillHeaderActivitiesInfo(cat, categories, act, height, header_categories);
+      mainCategories.forEach((cat_id) => {
+        const cat: Category = categories.filter((cat) => {
+          return cat._id === cat_id;
+        })[0];
+        this.fillHeaderActivitiesInfo(
+          cat,
+          categories,
+          act,
+          height,
+          header_categories
+        );
       });
 
       //console.log(header_categories[height])
-
     });
- 
+
     return {
-    
       header_width: width,
       header_height: height,
       header_cells: header_categories,
-      
     };
   }
 
@@ -336,26 +307,33 @@ export class ActivitiesService {
     categories: Category[],
     activities: Activity[],
     height: number,
-    header_categories: Object[][]){
-    category.activities.forEach(id => {
-      const activity = activities.filter((category) => {return category._id === id;})[0];
-      if(activity != null ){
+    header_categories: Object[][]
+  ) {
+    category.activities.forEach((id) => {
+      const activity = activities.filter((category) => {
+        return category._id === id;
+      })[0];
+      if (activity != null) {
         header_categories[height].push({
-          id:activity._id,
-          name:activity.name,
+          id: activity._id,
+          name: activity.name,
           row_span: 1,
           col_span: 1,
-          max_points: activity.max_points
+          max_points: activity.max_points,
         });
       }
-      
     });
-    category.sub_categories.forEach(cat_id => {
-      const next_cat: Category = categories.filter((cat) => {return cat._id === cat_id;})[0];
-      this.fillHeaderActivitiesInfo(next_cat, categories, activities, height, header_categories);
+    category.sub_categories.forEach((cat_id) => {
+      const next_cat: Category = categories.filter((cat) => {
+        return cat._id === cat_id;
+      })[0];
+      this.fillHeaderActivitiesInfo(
+        next_cat,
+        categories,
+        activities,
+        height,
+        header_categories
+      );
     });
   }
-
-
-
 }

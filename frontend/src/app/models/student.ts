@@ -1,3 +1,5 @@
+import { Message } from "./message";
+
 export interface Student {
   _id: string;
   firstName: string;
@@ -5,9 +7,9 @@ export interface Student {
   nick: string;
   email: string;
   github: string;
-  messages: Array<Object>;
+  messages: Array<Message>;
   grades: Array<{
-    activity: string,
-    grade: number | null
-  }>
+    activity: string;
+    grade: number | null;
+  }>;
 }

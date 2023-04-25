@@ -24,13 +24,12 @@
             >Profile</a
           >
         </li>
-        <li class="nav-item" *ngIf="loggedIn&&isTeacher">
+        <li class="nav-item" *ngIf="loggedIn && isTeacher">
           <a
             class="nav-link"
             href="#"
             routerLink="dashboard"
             routerLinkActive="active"
-            
             >Dashboard</a
           >
         </li>
@@ -43,7 +42,7 @@
             >Leaderboard</a
           >
         </li>
-        <li class="nav-item" *ngIf="loggedIn&&isTeacher">
+        <li class="nav-item" *ngIf="loggedIn && isTeacher">
           <a
             class="nav-link"
             href="#"
@@ -52,7 +51,7 @@
             >Add category</a
           >
         </li>
-        <li class="nav-item" *ngIf="loggedIn&&isTeacher">
+        <li class="nav-item" *ngIf="loggedIn && isTeacher">
           <a
             class="nav-link"
             href="#"
@@ -61,13 +60,13 @@
             >Add activity</a
           >
         </li>
-        <li class="nav-item" *ngIf="loggedIn&&isTeacher">
+        <li class="nav-item" *ngIf="loggedIn && isTeacher">
           <a
             class="nav-link"
             href="#"
             routerLink="teacherpanel"
             routerLinkActive="active"
-            >Teacher Panel</a
+            >Teacher panel</a
           >
         </li>
       </ul>
@@ -89,11 +88,11 @@
       >
         Sign up
       </button>
-      <button 
-       class="d-flex btn btn-outline-success m-1"
-       (click)="logout()"
-       *ngIf="loggedIn"
-       >
+      <button
+        class="d-flex btn btn-outline-success m-1"
+        (click)="logout()"
+        *ngIf="loggedIn"
+      >
         Log out
       </button>
     </div>

@@ -1,6 +1,5 @@
 const Activity = require("../models/activity");
 const Category = require("../models/category");
-const mongoose = require("mongoose");
 
 module.exports.getAllCategories = async (req, res) => {
   try {
@@ -24,12 +23,12 @@ module.exports.addCategory = async (req, res) => {
 
 module.exports.assignSubcategory = async (req, res) => {
   try {
-    const {categoryID, subcategoryID} = req.body;
+    const { categoryID, subcategoryID } = req.body;
     await Category.findByIdAndUpdate(categoryID, {
-      $addToSet: {sub_categories: subcategoryID},
+      $addToSet: { sub_categories: subcategoryID },
     });
     res.status(200).json({
-      action: "SUBCATEGORY CORRECTLY ASSIGNED"
+      action: "SUBCATEGORY CORRECTLY ASSIGNED",
     });
   } catch (err) {
     Category.findByIdAndDelete(req.body.subcategoryID);
@@ -39,12 +38,12 @@ module.exports.assignSubcategory = async (req, res) => {
 
 module.exports.assignActivity = async (req, res) => {
   try {
-    const {categoryID, activityID} = req.body;
+    const { categoryID, activityID } = req.body;
     await Category.findByIdAndUpdate(categoryID, {
-      $addToSet: { activities: Object(activityID)},
+      $addToSet: { activities: Object(activityID) },
     });
     res.status(200).json({
-      action: "ACTIVITY CORRECTLY ASSIGNED"
+      action: "ACTIVITY CORRECTLY ASSIGNED",
     });
   } catch (err) {
     Activity.findByIdAndDelete(req.body.activityID);
