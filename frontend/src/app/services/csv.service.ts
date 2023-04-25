@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class CsvService {
   public saveDataInCSV(
@@ -10,16 +10,16 @@ export class CsvService {
     activities: Array<any>
   ): string {
     if (data.length == 0) {
-      return '';
+      return "";
     }
 
     let propertyNames = Object.keys(data[0]).filter(
-      (name) => !['grades', '__v', 'messages', 'password'].includes(name)
+      (name) => !["grades", "__v", "messages", "password"].includes(name)
     );
     propertyNames = propertyNames.concat(
-      activities.map((act) => 'grade_' + act.name)
+      activities.map((act) => "grade_" + act.name)
     );
-    const rowWithPropertyNames = propertyNames.join(';') + '\n';
+    const rowWithPropertyNames = propertyNames.join(";") + "\n";
 
     let csvContent = rowWithPropertyNames;
 
@@ -29,26 +29,26 @@ export class CsvService {
       const values: string[] = [];
 
       activities
-        .map((act) => 'grade_' + act.name)
+        .map((act) => "grade_" + act.name)
         .forEach((newKey, i) => {
           data[idx][newKey] = studentInfo[idx].grades[i];
         });
 
       propertyNames.forEach((key) => {
-        if (['grades', '__v', 'messages', 'password'].includes(key)) return;
+        if (["grades", "__v", "messages", "password"].includes(key)) return;
         let val: any = item[key];
 
         if (val !== undefined && val !== null) {
           val = new String(val);
         } else {
-          val = '';
+          val = "";
         }
         values.push(val);
       });
 
-      rows.push(values.join(';'));
+      rows.push(values.join(";"));
     });
-    csvContent += rows.join('\n');
+    csvContent += rows.join("\n");
 
     return csvContent;
   }

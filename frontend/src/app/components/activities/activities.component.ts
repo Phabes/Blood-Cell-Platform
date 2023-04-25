@@ -1,12 +1,12 @@
-import { Component } from '@angular/core';
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
-import { Category } from 'src/app/models/category';
-import { ActivitiesService } from 'src/app/services/activities.service';
+import { Component } from "@angular/core";
+import { FormArray, FormBuilder, Validators } from "@angular/forms";
+import { Category } from "src/app/models/category";
+import { ActivitiesService } from "src/app/services/activities.service";
 
 @Component({
-  selector: 'app-activities',
-  templateUrl: './activities.component.html',
-  styleUrls: ['./activities.component.css'],
+  selector: "app-activities",
+  templateUrl: "./activities.component.html",
+  styleUrls: ["./activities.component.css"],
 })
 export class ActivitiesComponent {
   mainCategories!: Array<{ name: string; id: string }>;
@@ -26,17 +26,17 @@ export class ActivitiesComponent {
   }
 
   activityForm = this.fb.group({
-    name: ['activity1', Validators.required],
+    name: ["activity1", Validators.required],
     maxPoints: [
       1,
       Validators.compose([Validators.required, Validators.min(1)]),
     ],
     category: this.fb.array([
       this.fb.group({
-        name: ['', Validators.required, this.canBeAssigned],
+        name: ["", Validators.required, this.canBeAssigned],
       }),
     ]),
-    deadline: [''],
+    deadline: [""],
   });
 
   ngOnInit() {
@@ -64,14 +64,14 @@ export class ActivitiesComponent {
     };
     const result = await this.actService.addActivity(data);
 
-    if (result === 'ACTIVITY CORRECTLY ASSIGNED') {
+    if (result === "ACTIVITY CORRECTLY ASSIGNED") {
       this.wasActivityCorrectlyAdded = true;
       this.resetForm();
     } else this.wasActivityCorrectlyAdded = false;
   }
 
   getFormCategories(): FormArray {
-    return this.activityForm.get('category') as FormArray;
+    return this.activityForm.get("category") as FormArray;
   }
 
   getSubCategories(name: string) {
@@ -113,10 +113,10 @@ export class ActivitiesComponent {
 
   addCategory() {
     const newGroup = this.fb.group({
-      name: ['', Validators.required],
+      name: ["", Validators.required],
     });
     newGroup.setValidators([Validators.required]);
-    if (!this.canBeAssigned && this.selectedCategories[0] !== '')
+    if (!this.canBeAssigned && this.selectedCategories[0] !== "")
       this.getFormCategories().push(newGroup);
   }
 

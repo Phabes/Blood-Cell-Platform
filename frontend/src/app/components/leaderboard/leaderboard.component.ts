@@ -1,19 +1,18 @@
-import { Component } from "@angular/core";
-import { Observable } from "rxjs";
-import { LeaderBoardService } from "src/app/services/leaderboard.service";
-import { CsvService } from "src/app/services/csv.service";
-import { Student } from "src/app/models/student";
-import { UserService } from "src/app/services/user.service";
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { LeaderBoardService } from 'src/app/services/leaderboard.service';
+import { CsvService } from 'src/app/services/csv.service';
+import { Student } from 'src/app/models/student';
+import { UserService } from 'src/app/services/user.service';
 // import { StudentFilterPipe } from "src/app/student-filter.pipe";
-import { FormBuilder } from "@angular/forms";
-import { ActivitiesService } from "src/app/services/activities.service";
-import { Cell } from "src/app/models/cell";
-import {MatTooltipModule} from "@angular/material/tooltip";
+import { FormBuilder } from '@angular/forms';
+import { ActivitiesService } from 'src/app/services/activities.service';
+import { Cell } from 'src/app/models/cell';
 
 @Component({
-  selector: "app-leaderboard",
-  templateUrl: "./leaderboard.component.html",
-  styleUrls: ["./leaderboard.component.css"],
+  selector: 'app-leaderboard',
+  templateUrl: './leaderboard.component.html',
+  styleUrls: ['./leaderboard.component.css'],
 })
 export class LeaderboardComponent {
   users$!: Observable<Student[]>;
@@ -51,7 +50,7 @@ export class LeaderboardComponent {
       if (event.target.value >= 0 && event.target.value <= max_points) {
         this.userService.changeGrade(student_name, event.target.value, act);
       } else {
-        window.alert("Podano niewłaściwą ilość punktów");
+        window.alert('Podano niewłaściwą ilość punktów');
       }
     }
 
@@ -83,7 +82,7 @@ export class LeaderboardComponent {
   }
 
   Search = this.fb.group({
-    name: [""],
+    name: [''],
     minPoints: [null],
     maxPoints: [null],
   });
@@ -102,33 +101,33 @@ export class LeaderboardComponent {
       this.value[this.value.length - 1]
     );
 
-    const hiddenElement = document.createElement("a");
-    hiddenElement.href = "data:text/csv;charset=utf-8," + encodeURI(csvContent);
-    hiddenElement.target = "_blank";
-    hiddenElement.download = name + ".csv";
+    const hiddenElement = document.createElement('a');
+    hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csvContent);
+    hiddenElement.target = '_blank';
+    hiddenElement.download = name + '.csv';
     hiddenElement.click();
   }
 
   public hintDeadline(cell: Cell) {
-    if (cell.deadline){
+    if (cell.deadline) {
       const date = new Date(cell.deadline);
-      return "Due to " + date.toLocaleDateString("en-GB");
-    } 
-    return "";
+      return 'Due to ' + date.toLocaleDateString('en-GB');
+    }
+    return '';
   }
 
-  public isPastDeadlineColor(cell:Cell) : string {
-    if (cell.deadline){
+  public isPastDeadlineColor(cell: Cell): string {
+    if (cell.deadline) {
       const date = new Date(cell.deadline).getTime();
       const now = new Date().getTime();
-      if (now > date) return "rgba(72, 72, 72, 0.355)";
-      else return "rgba(255, 248, 47, 0.411)";
+      if (now > date) return 'rgba(72, 72, 72, 0.355)';
+      else return 'rgba(255, 248, 47, 0.411)';
     }
-    return "auto";
+    return 'auto';
   }
 
-  public isPastDeadlineIcon(cell:Cell) : boolean {
-    if (cell.deadline){
+  public isPastDeadlineIcon(cell: Cell): boolean {
+    if (cell.deadline) {
       const date = new Date(cell.deadline).getTime();
       const now = new Date().getTime();
       if (now > date) return true;

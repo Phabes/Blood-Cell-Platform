@@ -1,18 +1,18 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { SERVER_NAME } from 'src/env/env';
-import { Category } from '../models/category';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable } from "rxjs";
+import { SERVER_NAME } from "src/env/env";
+import { Category } from "../models/category";
 
 const httpOptions = {
   headers: new HttpHeaders({
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   }),
   withCredentials: true,
 };
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class CategoriesService {
   items: Category[] = [];
@@ -25,7 +25,7 @@ export class CategoriesService {
 
   getItems() {
     return this.http.get<{ date: Date; task: string; points: number }[]>(
-      '../assets/categories.json'
+      "../assets/categories.json"
     );
   }
 
