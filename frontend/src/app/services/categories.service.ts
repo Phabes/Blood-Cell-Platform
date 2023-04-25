@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders, HttpResponse } from "@angular/common/http";
-import { Observable, Subject, tap } from "rxjs";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable } from "rxjs";
 import { SERVER_NAME } from "src/env/env";
 import { Category } from "../models/category";
 
@@ -16,8 +16,9 @@ const httpOptions = {
 })
 export class CategoriesService {
   items: Category[] = [];
+
   constructor(private http: HttpClient) {}
-  value: Object | undefined;
+
   addToCart(category: Category) {
     this.items.push(category);
   }

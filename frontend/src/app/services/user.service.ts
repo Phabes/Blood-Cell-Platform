@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { SERVER_NAME } from "src/env/env";
 import { FormGroup } from "@angular/forms";
 import { Observable, Subject } from "rxjs";
-import { User } from "../models/user";
+import { UserRole } from "../models/userRole";
 import { Student } from "../models/student";
 import { Router } from "@angular/router";
 import { GithubStudent } from "../models/githubStudent";
@@ -18,24 +18,22 @@ const httpOptions = {
   providedIn: "root",
 })
 export class UserService {
-
-  user = new Subject<User>();
-  constructor(private httpClient: HttpClient, private router:Router) {
-    this.checkAuth().subscribe((data)=>{
-      this.setUser({email:data.email,role:data.role});
-
+  user = new Subject<UserRole>();
+  constructor(private httpClient: HttpClient, private router: Router) {
+    this.checkAuth().subscribe((data) => {
+      this.setUser({ email: data.email, role: data.role });
     });
   }
 
-  setUser(user:User){
+  setUser(user: UserRole) {
     this.user.next(user);
   }
 
-  getUser(){
+  getUser() {
     return this.user.asObservable();
   }
 
-  checkAuth(){
+  checkAuth() {
     return this.httpClient.post<any>(
       `${SERVER_NAME}/user/authUser`,
       {},
@@ -53,12 +51,11 @@ export class UserService {
       github: form.value.github,
     };
 
-    return this.httpClient
-      .post<any>(
-        `${SERVER_NAME}/user/student/register`,
-        { newUser: newUser },
-        httpOptions
-      );
+    return this.httpClient.post<any>(
+      `${SERVER_NAME}/user/student/register`,
+      { newUser: newUser },
+      httpOptions
+    );
   }
 
   registerTeacher(form: FormGroup) {
@@ -69,12 +66,11 @@ export class UserService {
       password: form.value.password,
     };
 
-    return this.httpClient
-      .post<any>(
-        `${SERVER_NAME}/user/teacher/register`,
-        { newUser: newUser },
-        httpOptions
-      );
+    return this.httpClient.post<any>(
+      `${SERVER_NAME}/user/teacher/register`,
+      { newUser: newUser },
+      httpOptions
+    );
   }
 
   signIn(form: FormGroup) {
@@ -83,11 +79,14 @@ export class UserService {
       password: form.value.password,
     };
 
-    return this.httpClient
-      .post<any>(`${SERVER_NAME}/user/login`, user, httpOptions);
+    return this.httpClient.post<any>(
+      `${SERVER_NAME}/user/login`,
+      user,
+      httpOptions
+    );
   }
 
-  logout(){
+  logout() {
     return this.httpClient.post<any>(
       `${SERVER_NAME}/user/logout`,
       {},
@@ -112,9 +111,13 @@ export class UserService {
     );
   }
 
-  changeGrade(nick: string, grade: number, act: string){
+  changeGrade(nick: string, grade: number, act: string) {
     this.httpClient
-      .post<any>(`${SERVER_NAME}/user/students/changes`, {nick: nick, grade: grade, act:act}, httpOptions)
+      .post<any>(
+        `${SERVER_NAME}/user/students/changes`,
+        { nick: nick, grade: grade, act: act },
+        httpOptions
+      )
       .subscribe((data) => {
         console.log(data);
       });

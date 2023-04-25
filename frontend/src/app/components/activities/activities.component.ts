@@ -1,11 +1,5 @@
 import { Component } from "@angular/core";
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  Validators,
-  AbstractControlOptions,
-} from "@angular/forms";
+import { FormArray, FormBuilder, Validators } from "@angular/forms";
 import { Category } from "src/app/models/category";
 import { ActivitiesService } from "src/app/services/activities.service";
 
@@ -94,14 +88,13 @@ export class ActivitiesComponent {
   }
 
   handleCategorySelection(event: any, i: number) {
-    const selectedCategoryName = event.target.value;
-    this.selectedCategories[i] = selectedCategoryName;
+    this.selectedCategories[i] = event.target.value;
     this.clearTrailingCategories(i);
     this.setCanBeAssigned(i);
-    this.addCategory(selectedCategoryName);
+    this.addCategory();
   }
 
-  addCategory(name: string) {
+  addCategory() {
     const newGroup = this.fb.group({
       name: ["", Validators.required],
     });

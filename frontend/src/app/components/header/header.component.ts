@@ -5,30 +5,26 @@ import { UserService } from "src/app/services/user.service";
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
-  styleUrls: ["./header.component.css"]
+  styleUrls: ["./header.component.css"],
 })
 export class HeaderComponent {
   loggedIn = false;
   isTeacher = true;
-  constructor(private userService: UserService, private router:Router){
-
-    this.userService.getUser().subscribe((user)=>{
-      if(user.email && user.role){
-        console.log(user);
+  constructor(private userService: UserService, private router: Router) {
+    this.userService.getUser().subscribe((user) => {
+      if (user.email && user.role) {
         this.loggedIn = true;
-        if (user.role=="teacher")
-          this.isTeacher = true;
-        else
-          this.isTeacher = false;
-      }else{
+        if (user.role == "teacher") this.isTeacher = true;
+        else this.isTeacher = false;
+      } else {
         this.loggedIn = false;
         this.isTeacher = false;
       }
     });
   }
 
-  logout(){
-    this.userService.logout().subscribe((data) => {
+  logout() {
+    this.userService.logout().subscribe(() => {
       this.userService.setUser({ email: "", role: "" });
       this.router.navigate(["/"]);
     });

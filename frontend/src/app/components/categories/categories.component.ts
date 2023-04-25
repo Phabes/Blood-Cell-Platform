@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { FormArray, FormBuilder, Validators } from "@angular/forms";
+import { FormBuilder, Validators } from "@angular/forms";
 import { Category } from "src/app/models/category";
 import { CategoriesService } from "src/app/services/categories.service";
 
@@ -60,7 +60,6 @@ export class CategoriesComponent {
       console.log("no value works");
       this.catService.addCategory_noAboveCategoryChosen(data);
     }
-    const aboveCategoryName = this.selectedCategory;
     const aboveCategoryID = this.categories.find(
       (cat) => cat.name == this.selectedCategory
     )?._id;
