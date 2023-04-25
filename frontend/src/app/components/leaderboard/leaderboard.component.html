@@ -21,9 +21,9 @@
             <tr   class="border" *ngFor="let data of value; let i = index"> 
               
                 <td  class= "text-center" *ngIf="i == 0" [attr.rowspan]="1000">Nick</td>
-                <td   class="border  text-center" *ngFor="let cell of data  " [attr.colspan]="cell.col_span" [attr.rowspan]="cell.row_span">
+                <td   class="border  text-center" *ngFor="let cell of data  " [attr.colspan]="cell.col_span" [attr.rowspan]="cell.row_span" [ngStyle]="{'background-color': (this.isPastDeadlineColor(cell))}">
              
-                  <div  class="row "> <div class="auto-col">{{ cell.name }}</div> <div  class="auto-col" *ngIf="cell.max_points != 0">Max: {{cell.max_points}}</div>  </div>
+                  <div  class="row " [matTooltip]="this.hintDeadline(cell)"> <div class="auto-col">{{ cell.name }} {{!cell.deadline ? "" : this.isPastDeadlineIcon(cell) ?	"&#128274;"	: "&#128336;"}}</div> <div  class="auto-col" *ngIf="cell.max_points != 0">Max: {{cell.max_points}}</div>  </div>
                  
              
                 </td>

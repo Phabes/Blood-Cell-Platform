@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { Observable, Subject } from "rxjs";
+import { Observable, Subject, firstValueFrom } from "rxjs";
 import { SERVER_NAME } from "src/env/env";
 import { Activity } from "../models/activity";
 import { Result } from "../models/result";
@@ -20,6 +20,7 @@ export class ActivitiesService {
   items: Activity[] = [];
   constructor(private http: HttpClient) {}
   value: object | undefined;
+
   addToCart(activity: Activity) {
     this.items.push(activity);
   }
@@ -30,32 +31,31 @@ export class ActivitiesService {
     );
   }
 
-  addActivity(data: any) {
+  async addActivity(data: any) {
     const newActivity = {
       name: data.name,
       max_points: data.max_points,
       deadline: data.deadline,
       created_on: new Date(),
     } as Activity;
-    this.http
-      .post<any>(`${SERVER_NAME}/activity/add`, newActivity, httpOptions)
-      .subscribe((response) => {
-        const categoryID = data.categoryID;
-        const activityID = response._id;
-        const request = {
-          categoryID: categoryID,
-          activityID: response._id,
-        };
-        this.http
-          .post<any>(
-            `${SERVER_NAME}/category/assign_activity`,
-            request,
-            httpOptions
-          )
-          .subscribe((res) => {
-            console.log(res);
-          });
-      });
+    try {
+      const response = await firstValueFrom(this.http.post<any>(`${SERVER_NAME}/activity/add`, newActivity, httpOptions));
+
+      const categoryID = data.categoryID;
+      const request = {
+        categoryID: categoryID,
+        activityID: response._id,
+      };
+
+      const finalResponse = await firstValueFrom(this.http.post<any>(`${SERVER_NAME}/category/assign_activity`,request,httpOptions,));
+      return finalResponse.action;
+        
+    } catch (error) {
+      console.log("Something wrong!");
+      return "SERWER ERROR";
+    }
+      
+      
   }
 
   clearCart() {
@@ -98,10 +98,8 @@ export class ActivitiesService {
       const subCategories: Array<string> = [];
       const activities: Array<Activity> = [];
 
-      //console.log(categories)
       // Get info about root categories and width of the header
       categories.forEach((category: Category) => {
-        //  console.log(category.activities)
         category.row_span = null;
         category.col_span = null;
         category.level = 0;
@@ -130,7 +128,6 @@ export class ActivitiesService {
 
       // Traverse over categories and get cells height
       this.computeCategoryRowSpan(categories, height);
-      // console.log(this.getHeaderInfoOutput(mainCategories, categories, height, width))
       subject.next(
         this.getHeaderInfoOutput(mainCategories, categories, height, width)
       );
@@ -147,7 +144,6 @@ export class ActivitiesService {
       return cat._id === id;
     })[0];
     category.level = Math.max(category.level!, level);
-    // console.log(category.name  , category.col_span)
     if (category.col_span !== null) return category.col_span;
     if (
       category.activities.length === 0 &&
@@ -158,7 +154,6 @@ export class ActivitiesService {
     }
     if (category.activities.length > 0) {
       category.col_span = category.activities.length;
-      //console.log(category.name , category.activities)
       return category.col_span;
     }
 
@@ -169,7 +164,6 @@ export class ActivitiesService {
         categories,
         level + 1
       );
-      //console.log(col_span , cat_id)
     });
 
     category.col_span = col_span;
@@ -205,7 +199,6 @@ export class ActivitiesService {
   }
 
   computeCategoryRowSpan(categories: Category[], height: number) {
-    //console.log(height)
     categories.forEach((category) => {
       if (category.sub_categories.length > 0) {
         category.row_span = 1;
@@ -232,6 +225,7 @@ export class ActivitiesService {
       row_span: number;
       col_span: number;
       max_points: number;
+      deadline: Date|null;
     }[][] = [];
     let nextCategories: Array<string> = [];
     nextCategories = mainCategories;
@@ -250,29 +244,9 @@ export class ActivitiesService {
             row_span: category.row_span!,
             col_span: category.col_span!,
             max_points: 0,
+            deadline: null,
           });
-
-          // console.log(category.name)
-
           category.sub_categories.forEach((id) => tempCategories.push(id));
-          // category.activities.forEach(id => {
-
-          //   console.log(header_categories[height])
-
-          //     let activity = act.filter((cat) => {return cat._id === id})[0];
-
-          //     if(activity != null ){
-          //     header_categories[height].unshift({
-
-          //         id:activity._id,
-          //         name:activity.name,
-          //         row_span: 1,
-          //         col_span: 1,
-
-          //       });
-          //     }
-
-          // })
         });
 
         nextCategories = tempCategories.slice();
@@ -320,6 +294,7 @@ export class ActivitiesService {
           row_span: 1,
           col_span: 1,
           max_points: activity.max_points,
+          deadline: activity.deadline
         });
       }
     });

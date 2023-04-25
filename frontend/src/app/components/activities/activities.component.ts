@@ -2,9 +2,7 @@ import { Component } from "@angular/core";
 import {
   FormArray,
   FormBuilder,
-  FormGroup,
   Validators,
-  AbstractControlOptions,
 } from "@angular/forms";
 import { Category } from "src/app/models/category";
 import { ActivitiesService } from "src/app/services/activities.service";
@@ -19,6 +17,7 @@ export class ActivitiesComponent {
   categories!: Category[];
   selectedCategories: string[] = [];
   canBeAssigned = false;
+  wasActivityCorrectlyAdded : boolean | null = null;
 
   constructor(private fb: FormBuilder, private actService: ActivitiesService) {
     this.actService.getMainCategories().subscribe((categories) => {
@@ -44,7 +43,11 @@ export class ActivitiesComponent {
     deadline: [""],
   });
 
-  onSubmit() {
+  ngOnInit() {
+    this.wasActivityCorrectlyAdded = null;
+  }
+
+  async onSubmit() {
     const categoryName =
       this.selectedCategories[this.selectedCategories.length - 1];
     const categoryID = this.categories.find(
@@ -56,7 +59,10 @@ export class ActivitiesComponent {
       deadline: this.activityForm.value.deadline,
       categoryID: categoryID,
     };
-    this.actService.addActivity(data);
+    const result = await this.actService.addActivity(data);
+    
+    if (result === "ACTIVITY CORRECTLY ASSIGNED") this.wasActivityCorrectlyAdded = true;
+    else this.wasActivityCorrectlyAdded = false;
   }
 
   getFormCategories(): FormArray {

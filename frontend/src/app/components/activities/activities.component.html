@@ -79,5 +79,12 @@
           Add activity
         </button>
       </div>
+      <div class="error-prompt" *ngIf="this.wasActivityCorrectlyAdded != null && this.wasActivityCorrectlyAdded == true" [ngStyle]="{color: 'green'}">
+        Activity added!
+      </div>
+      <div class="error-prompt" *ngIf="this.wasActivityCorrectlyAdded != null && this.wasActivityCorrectlyAdded == false" [ngStyle]="{color: 'red'}">
+        Error during adding activity. Activity was not added!
+      </div>
     </form>
+    
   </div>

@@ -8,6 +8,7 @@ import { UserService } from "src/app/services/user.service";
 import { FormBuilder } from "@angular/forms";
 import { ActivitiesService } from "src/app/services/activities.service";
 import { Cell } from "src/app/models/cell";
+import {MatTooltipModule} from "@angular/material/tooltip";
 
 @Component({
   selector: "app-leaderboard",
@@ -106,5 +107,33 @@ export class LeaderboardComponent {
     hiddenElement.target = "_blank";
     hiddenElement.download = name + ".csv";
     hiddenElement.click();
+  }
+
+  public hintDeadline(cell: Cell) {
+    if (cell.deadline){
+      const date = new Date(cell.deadline);
+      return "Due to " + date.toLocaleDateString("en-GB");
+    } 
+    return "";
+  }
+
+  public isPastDeadlineColor(cell:Cell) : string {
+    if (cell.deadline){
+      const date = new Date(cell.deadline).getTime();
+      const now = new Date().getTime();
+      if (now > date) return "rgba(72, 72, 72, 0.355)";
+      else return "rgba(255, 248, 47, 0.411)";
+    }
+    return "auto";
+  }
+
+  public isPastDeadlineIcon(cell:Cell) : boolean {
+    if (cell.deadline){
+      const date = new Date(cell.deadline).getTime();
+      const now = new Date().getTime();
+      if (now > date) return true;
+      return false;
+    }
+    return false;
   }
 }

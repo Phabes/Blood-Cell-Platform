@@ -17,6 +17,8 @@ import { TeacherPanelComponent } from "./components/teacher-panel/teacher-panel.
 import { ActivitiesComponent } from "./components/activities/activities.component";
 import { CategoriesComponent } from "./components/categories/categories.component";
 import { SimpleSearchPipe } from "./simple-search.pipe";
+import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 @NgModule({
   declarations: [
@@ -39,6 +41,8 @@ import { SimpleSearchPipe } from "./simple-search.pipe";
     HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatTooltipModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

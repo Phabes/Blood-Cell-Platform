@@ -12,3 +12,9 @@
   input[type="radio"] {
     margin-right: 0.4em;
   }
+
+  .error-prompt {
+    text-align: center;
+    font-size: large;
+    margin-top: 1em;
+  }
