@@ -23,10 +23,12 @@
                 <td  class= "text-center" *ngIf="i == 0" [attr.rowspan]="1000">Nick</td>
                 <td   class="border  text-center" *ngFor="let cell of data  " [attr.colspan]="cell.col_span" [attr.rowspan]="cell.row_span" [ngStyle]="{'background-color': (this.isPastDeadlineColor(cell))}">
              
-                  <div  class="row " [matTooltip]="this.hintDeadline(cell)"> <div class="auto-col">{{ cell.name }} {{!cell.deadline ? "" : this.isPastDeadlineIcon(cell) ?	"&#128274;"	: "&#128336;"}}</div> <div  class="auto-col" *ngIf="cell.max_points != 0">Max: {{cell.max_points}}</div>  </div>
+                  <div  class="row " [matTooltip]="this.hintDeadline(cell)"> <div class="auto-col">{{ cell.name }} {{!cell.deadline ? "" : this.isPastDeadlineIcon(cell) ?	"&#128274;"	: "&#128336;"}}</div> <div  class="auto-col" *ngIf="cell.max_points != 0">Max: {{cell.max_points}} </div>  </div>
                  
              
                 </td>
+                <td  class= "text-center" *ngIf="i == 0" [attr.rowspan]="1000">Sum points Max:{{generalMaxPoints}} </td>
+                
             </tr>
           </thead>
           <tbody>
@@ -36,6 +38,9 @@
               <td   class="border text-center" *ngFor="let c of d.grades ; let j = index" [attr.colspan]="1" [attr.rowspan]="1">
                 <input type="text"   value={{c}}  ng-model="text" (keydown.enter)="change($event, d.nick, c, j)"  [style.backgroundColor]=" ( ( c!=null && pointsMax !=null && pointsMin  !=null && pointsMax >=  c  && pointsMin <=  c )  || ( (pointsMin ==null && pointsMax !=null && pointsMax >=  c ) ||  ( pointsMax ==null && pointsMin  !=null  && pointsMin <=  c ) )  )? '#eee00e' : '#eeeeee'"> 
               </td>
+              <td  [attr.rowspan]="1" > {{d.sumPoints}}  </td>
+             
+              
           </tr>
         </tbody>
     </table>

@@ -19,8 +19,10 @@ const httpOptions = {
 })
 export class ActivitiesService {
   items: Activity[] = [];
+  genPoints : number = 0;
+  constructor(private http: HttpClient) {
 
-  constructor(private http: HttpClient) {}
+  }
 
   addToCart(activity: Activity) {
     this.items.push(activity);
@@ -30,6 +32,20 @@ export class ActivitiesService {
     return this.http.get<{ date: Date; task: string; points: number }[]>(
       "../assets/activities.json"
     );
+  }
+   getMaxPoints(){
+    let act = this.getActivities()
+    act.subscribe( e => {
+     
+      for ( let i = 0 ; i< e.length ; i++){
+        this.genPoints+=e[i].max_points
+      }   console.log(this.genPoints)
+      return this.genPoints;
+    }
+ 
+    )
+    return this.genPoints;
+    
   }
 
   async addActivity(data: any) {
@@ -67,7 +83,7 @@ export class ActivitiesService {
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${SERVER_NAME}/category/all`);
   }
-  private getActivities(): Observable<Activity[]> {
+   getActivities(): Observable<Activity[]> {
     return this.http.get<Activity[]>(`${SERVER_NAME}/activity/all`);
   }
 
@@ -297,8 +313,10 @@ export class ActivitiesService {
           max_points: activity.max_points,
           deadline: activity.deadline
         });
+        this.genPoints += activity.max_points
       }
     });
+
     category.sub_categories.forEach((cat_id) => {
       const next_cat: Category = categories.filter((cat) => {
         return cat._id === cat_id;
@@ -312,4 +330,6 @@ export class ActivitiesService {
       );
     });
   }
+
+
 }

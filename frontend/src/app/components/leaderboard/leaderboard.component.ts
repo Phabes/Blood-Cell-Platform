@@ -22,8 +22,9 @@ export class LeaderboardComponent {
   data!: Student[];
 
   value!: Cell[][];
-  grades!: { nick: string; grades: (number | null)[] }[];
+  grades!: { nick: string; grades: (number | null)[]; }[];
   SearchNick: any;
+  generalMaxPoints: number = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -76,9 +77,32 @@ export class LeaderboardComponent {
 
     this.actService.getHeadersInfo().subscribe((e) => {
       this.value = e.header_cells;
-      this.grades = this.cartService.studentGrades(e.header_cells);
-      console.log(e.header_cells);
+      this.grades   = this.cartService.studentGrades(e.header_cells);
+      
     });
+
+    
+    this.getPoints()
+   
+  }
+
+   getPoints(){
+    let act = this.actService.getActivities().toPromise()
+    act.then( e => {
+     if(e != undefined){
+
+      for ( let i = 0 ; i< e.length ; i++){
+        this.generalMaxPoints+=e[i].max_points
+      }   console.log(this.generalMaxPoints)
+
+     }
+      
+    }
+ 
+    )
+    console.log(this.generalMaxPoints)
+
+    
   }
 
   Search = this.fb.group({

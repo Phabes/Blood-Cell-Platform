@@ -12,6 +12,7 @@ import { Cell } from "../models/cell";
 export class LeaderBoardService {
   items: Observable<Student[]>;
   value!: Cell[];
+ 
 
   constructor(private http: HttpClient, private actService: ActivitiesService) {
     this.items = this.getItems();
@@ -24,8 +25,9 @@ export class LeaderBoardService {
   studentGrades(value: Cell[][]): {
     nick: string;
     grades: Array<number | null>;
-  }[] {
-    const result: { nick: string; grades: Array<number | null> }[] = [];
+    sumPoints: number
+  }[]  {
+    const result: { nick: string; grades: Array<number | null>; sumPoints: number }[] = [];
     this.actService.getHeadersInfo().subscribe((e) => {
       this.value = e.header_cells[length - 1];
       this.items.subscribe((student) => {
@@ -33,6 +35,7 @@ export class LeaderBoardService {
           result.push({
             nick: student[i].nick,
             grades: [],
+            sumPoints : 0
           });
           //  console.log(student[i] , value , value.length)
           //  console.log(value[value.length-1])
@@ -41,11 +44,13 @@ export class LeaderBoardService {
             for (let k = 0; k < student[i].grades.length; k++) {
               if (student[i].grades[k].activity === e.id) {
                 tmp = student[i].grades[k].grade;
+
               } else if (tmp == null) {
                 tmp = null;
               }
             }
             result[i].grades.push(tmp);
+            if (tmp !== null) result[i].sumPoints+=Number(tmp);
           });
         }
       });
