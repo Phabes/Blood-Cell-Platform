@@ -8,7 +8,7 @@ module.exports.sendMessageToAll = async (req, res) => {
     const messageToAll = new Message(message);
     await messageToAll.save();
     res.status(200).json({
-      action: "MESSAGE_SEND_TO_ALLf",
+      action: "MESSAGE_SEND_TO_ALL",
     });
   } catch (err) {
     res.status(500).json({ action: "Something wrong" });
