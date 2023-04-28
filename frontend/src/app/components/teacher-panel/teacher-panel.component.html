@@ -49,10 +49,32 @@
   </div>
   <textarea id="messageText" (keyup)="messageTextChange($event)"></textarea>
   <div id="buttons">
-    <button class="btn btn-primary" (click)="sendMessage()">Send</button>
-    <button class="btn btn-secondary" (click)="messageWindowState(false, [])">
+    <button class="btn btn-primary" (click)="sendMessage()" *ngIf="showButtons">
+      Send
+    </button>
+    <button
+      class="btn btn-secondary"
+      (click)="messageWindowState(false, [])"
+      *ngIf="showButtons"
+    >
       Cancel
     </button>
+  </div>
+  <div id="callbackMessage">
+    <div
+      class="error-prompt"
+      *ngIf="this.messageSent != null && this.messageSent == true"
+      [ngStyle]="{ color: 'green' }"
+    >
+      Message sent
+    </div>
+    <div
+      class="error-prompt"
+      *ngIf="this.messageSent != null && this.messageSent == false"
+      [ngStyle]="{ color: 'red' }"
+    >
+      Error during sending message!
+    </div>
   </div>
 </div>
 

@@ -1,5 +1,6 @@
 const Message = require("../models/message");
 const Student = require("../models/student");
+const Teacher = require("../models/teacher");
 
 module.exports.sendMessageToAll = async (req, res) => {
   try {
@@ -7,7 +8,7 @@ module.exports.sendMessageToAll = async (req, res) => {
     const messageToAll = new Message(message);
     await messageToAll.save();
     res.status(200).json({
-      action: "MESSAGE_SEND_TO_ALL",
+      action: "MESSAGE_SEND_TO_ALLf",
     });
   } catch (err) {
     res.status(500).json({ action: "Something wrong" });
@@ -22,6 +23,39 @@ module.exports.sendMessageToOne = async (req, res) => {
     });
     res.status(200).json({
       action: "MESSAGE_SEND_TO_ONE",
+    });
+  } catch (err) {
+    res.status(500).json({ action: "Something wrong" });
+  }
+};
+
+module.exports.getAllStudentMessages = async (req, res) => {
+  try {
+    const studentID = req.params.id;
+    const messagesToAll = await Message.find({}, { _id: 0, __v: 0 });
+    const studentData = await Student.findById(studentID, {
+      _id: 0,
+      firstName: 0,
+      lastName: 0,
+      email: 0,
+      password: 0,
+      nick: 0,
+      github: 0,
+      grades: 0,
+      __v: 0,
+    });
+    const messagesToSpecificStudent = studentData.messages;
+    const allMessages = messagesToAll.concat(messagesToSpecificStudent);
+    await Promise.all(
+      allMessages.map(async (message) => {
+        const sender = await Teacher.findById(message.sender);
+        message.sender = sender.email;
+        message.date = new Date(message.date);
+        return message;
+      })
+    ).then((response) => {
+      response.sort((a, b) => b.date - a.date);
+      res.status(200).json(response);
     });
   } catch (err) {
     res.status(500).json({ action: "Something wrong" });

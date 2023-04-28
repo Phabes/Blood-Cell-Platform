@@ -7,7 +7,7 @@ const {
   getCommits,
   findUser,
   logoutUser,
-  changeGrade
+  changeGrade,
 } = require("../controllers/user");
 const { requireAuth } = require("../middleware/authMiddleware");
 

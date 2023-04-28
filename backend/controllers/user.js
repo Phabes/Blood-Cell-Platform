@@ -45,6 +45,7 @@ module.exports.registerStudent = async (req, res) => {
       res.cookie("token", token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
       res.status(200).json({
         action: "STUDENT_REGISTERED",
+        _id: user._id,
         email: user.email,
         role: "student",
       });
@@ -89,6 +90,7 @@ module.exports.registerTeacher = async (req, res) => {
       res.cookie("token", token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
       res.status(200).json({
         action: "TEACHER_REGISTERED",
+        _id: user._id,
         email: user.email,
         role: "teacher",
       });
@@ -113,6 +115,7 @@ module.exports.loginUser = async (req, res) => {
         res.cookie("token", token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
         res.status(200).json({
           action: "STUDENT_LOGGED",
+          _id: student._id,
           email: student.email,
           role: "student",
         });
@@ -129,6 +132,7 @@ module.exports.loginUser = async (req, res) => {
         res.cookie("token", token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
         res.status(200).json({
           action: "TEACHER_LOGGED",
+          _id: teacher._id,
           email: teacher.email,
           role: "teacher",
         });
