@@ -19,6 +19,7 @@ import { CategoriesComponent } from "./components/categories/categories.componen
 import { SimpleSearchPipe } from "./simple-search.pipe";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatTooltipModule } from "@angular/material/tooltip";
+import { MessagesComponent } from "./components/messages/messages.component";
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { MatTooltipModule } from "@angular/material/tooltip";
     TeacherPanelComponent,
     ActivitiesComponent,
     CategoriesComponent,
-    SimpleSearchPipe
+    SimpleSearchPipe,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,

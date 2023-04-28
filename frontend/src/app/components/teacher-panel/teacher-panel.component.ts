@@ -16,6 +16,8 @@ export class TeacherPanelComponent {
   showMessageWindow = false;
   messageTarget: Student[] = [];
   messageText = "";
+  messageSent: boolean | null = null;
+  showButtons = true;
 
   constructor(
     private userService: UserService,
@@ -46,6 +48,7 @@ export class TeacherPanelComponent {
   }
 
   messageWindowState(state: boolean, messageTarget: Student[]): void {
+    this.messageSent = null;
     this.showMessageWindow = state;
     this.messageTarget = messageTarget;
   }
@@ -56,10 +59,22 @@ export class TeacherPanelComponent {
       sender: this.userService.getUserID(),
       text: this.messageText,
     };
+    this.showButtons = false;
     // if (Array.isArray(this.messageTarget))
     if (this.messageTarget.length == 1)
-      this.messageService.sendMessageToOne(message, this.messageTarget[0]);
-    else this.messageService.sendMessageToAll(message);
-    this.messageWindowState(false, []);
+      this.messageService
+        .sendMessageToOne(message, this.messageTarget[0])
+        .subscribe((data) => {
+          this.messageSent =
+            data.action == "MESSAGE_SEND_TO_ONE" ? true : false;
+        });
+    else
+      this.messageService.sendMessageToAll(message).subscribe((data) => {
+        this.messageSent = data.action == "MESSAGE_SEND_TO_ALL" ? true : false;
+      });
+    setTimeout(() => {
+      this.messageWindowState(false, []);
+      this.showButtons = true;
+    }, 1000);
   }
 }

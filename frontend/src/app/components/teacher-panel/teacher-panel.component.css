@@ -54,6 +54,7 @@
 
 #buttons {
   width: 200px;
+  height: 40px;
   display: flex;
   justify-content: space-around;
 }
@@ -69,4 +70,15 @@
 #sendMessage:hover {
   background-color: rgb(34, 135, 75);
   color: #ffffff;
+}
+
+#callbackMessage {
+  width: 400px;
+  height: 40px;
+}
+
+.error-prompt {
+  text-align: center;
+  font-size: large;
+  margin-top: 1em;
 }
