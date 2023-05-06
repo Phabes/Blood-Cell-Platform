@@ -16,6 +16,7 @@ const studentSchema = mongoose.Schema({
   //   },
   // ],
   grades: Array,
+  logs: Array,
 });
 
 const Student = mongoose.model("Student", studentSchema, "students");

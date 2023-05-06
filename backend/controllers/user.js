@@ -1,9 +1,10 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { SECRET, MAX_AGE, GITHUB_TOKEN } = require("../config/config");
-const Student = require("../models/student");
-const Activity = require("../models/activity");
 const mongoose = require("mongoose");
+const Activity = require("../models/activity");
+const Log = require("../models/log");
+const Student = require("../models/student");
 const Teacher = require("../models/teacher");
 const {
   validateRegisterCredentials,
@@ -221,25 +222,39 @@ module.exports.changeGrade = async (req, res) => {
     const student = await Student.findOne({ nick: req.body.nick });
     const id = new mongoose.Types.ObjectId(req.body.act);
 
-    var studentId = student._id;
+    const studentId = student._id;
     const activity = await Activity.findOne({ _id: id });
 
     if (student && activity) {
-      var grades = student.grades;
-      var index = grades.findIndex(
+      const grades = student.grades;
+      const index = grades.findIndex(
         (e) => e.activity.valueOf() === req.body.act
       );
+      const date = new Date();
+      const logs = student.logs;
+      const logMessage = {
+        date: date,
+        sender: "",
+        text: `Grade for activity ${activity.name} changed to ${req.body.grade}`,
+        type: "grade_update",
+      };
       if (index >= 0) {
         grades[index].grade = req.body.grade;
       } else {
         // activity not found so we need to add new one
         grades.push({ grade: req.body.grade, activity: id });
+        logMessage.text = `You received ${req.body.grade} for activity ${activity.name}`;
+        logMessage.type = "grade_added";
       }
-      await Student.updateOne({ nick: req.body.nick }, { grades: grades });
+      logs.push(logMessage);
+      await Student.updateOne(
+        { nick: req.body.nick },
+        { grades: grades, logs: logs }
+      );
       // update also activites db
 
-      var grades_ = activity.grades;
-      var index_ = grades_.findIndex(
+      const grades_ = activity.grades;
+      const index_ = grades_.findIndex(
         (e) => e.student_id.valueOf() === studentId.valueOf()
       );
       if (index_ >= 0) {

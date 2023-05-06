@@ -1,19 +1,34 @@
-import { Component } from "@angular/core";
-import { Observable } from "rxjs";
-import { ActivitiesService } from "src/app/services/activities.service";
+import { Component } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Log } from 'src/app/models/log';
+import { ActivitiesService } from 'src/app/services/activities.service';
+import { LogService } from 'src/app/services/log.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
-  selector: "app-dashboard",
-  templateUrl: "./dashboard.component.html",
-  styleUrls: ["./dashboard.component.css"],
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent {
   tasks!: Observable<{ date: Date; task: string; points: number }[]>;
+  logs: Log[] = [];
 
-  constructor(private activitiesService: ActivitiesService) {}
+  constructor(
+    private activitiesService: ActivitiesService,
+    private userService: UserService,
+    private logService: LogService
+  ) {}
 
   ngOnInit(): void {
     this.tasks = this.activitiesService.getItems();
     this.activitiesService.getHeadersInfo();
+
+    this.logService
+      .getStudentLogs(this.userService.getUserID())
+      .subscribe((data) => {
+        console.log(data);
+        this.logs = data;
+      });
   }
 }

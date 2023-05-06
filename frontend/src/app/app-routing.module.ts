@@ -1,69 +1,69 @@
-import { NgModule } from "@angular/core";
-import { RouterModule, Routes } from "@angular/router";
-import { DashboardComponent } from "./components/dashboard/dashboard.component";
-import { HomeComponent } from "./components/home/home.component";
-import { LeaderboardComponent } from "./components/leaderboard/leaderboard.component";
-import { LoginComponent } from "./components/login/login.component";
-import { ProfilComponent } from "./components/profil/profil.component";
-import { RegistrationComponent } from "./components/registration/registration.component";
-import { TeacherPanelComponent } from "./components/teacher-panel/teacher-panel.component";
-import { UserCartComponent } from "./components/user-cart/user-cart.component";
-import { LoggedGuard, PermissionsGuard } from "./guards/permissions.guard";
-import { CategoriesComponent } from "./components/categories/categories.component";
-import { ActivitiesComponent } from "./components/activities/activities.component";
-import { MessagesComponent } from "./components/messages/messages.component";
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { HomeComponent } from './components/home/home.component';
+import { LeaderboardComponent } from './components/leaderboard/leaderboard.component';
+import { LoginComponent } from './components/login/login.component';
+import { ProfilComponent } from './components/profil/profil.component';
+import { RegistrationComponent } from './components/registration/registration.component';
+import { TeacherPanelComponent } from './components/teacher-panel/teacher-panel.component';
+import { UserCartComponent } from './components/user-cart/user-cart.component';
+import { LoggedGuard, PermissionsGuard } from './guards/permissions.guard';
+import { CategoriesComponent } from './components/categories/categories.component';
+import { ActivitiesComponent } from './components/activities/activities.component';
+import { MessagesComponent } from './components/messages/messages.component';
 
 const routes: Routes = [
-  { path: "", component: HomeComponent },
+  { path: '', component: HomeComponent },
   {
-    path: "profil",
+    path: 'profil',
     component: ProfilComponent,
     canActivate: [LoggedGuard(true)],
   },
   {
-    path: "categories",
+    path: 'categories',
     component: CategoriesComponent,
-    canActivate: [PermissionsGuard(["teacher"])],
+    canActivate: [PermissionsGuard(['teacher'])],
   },
   {
-    path: "activities",
+    path: 'activities',
     component: ActivitiesComponent,
-    canActivate: [PermissionsGuard(["teacher"])],
+    canActivate: [PermissionsGuard(['teacher'])],
   },
   {
-    path: "dashboard",
+    path: 'dashboard',
     component: DashboardComponent,
-    canActivate: [PermissionsGuard(["teacher"])],
+    canActivate: [PermissionsGuard(['student'])],
   },
   {
-    path: "leaderboard",
+    path: 'leaderboard',
     component: LeaderboardComponent,
-    canActivate: [PermissionsGuard(["teacher"])],
+    canActivate: [PermissionsGuard(['teacher'])],
   },
   {
-    path: "teacherpanel",
+    path: 'teacherpanel',
     component: TeacherPanelComponent,
-    canActivate: [PermissionsGuard(["teacher"])],
+    canActivate: [PermissionsGuard(['teacher'])],
   },
   {
-    path: "registration",
+    path: 'registration',
     component: RegistrationComponent,
     canActivate: [LoggedGuard(false)],
   },
   {
-    path: "cart",
+    path: 'cart',
     component: UserCartComponent,
     canActivate: [LoggedGuard(true)],
   },
   {
-    path: "login",
+    path: 'login',
     component: LoginComponent,
     canActivate: [LoggedGuard(false)],
   },
   {
-    path: "messages",
+    path: 'messages',
     component: MessagesComponent,
-    canActivate: [PermissionsGuard(["student"])],
+    canActivate: [PermissionsGuard(['student'])],
   },
 ];
 @NgModule({
