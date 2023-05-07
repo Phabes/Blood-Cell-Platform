@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const { SECRET, MAX_AGE, GITHUB_TOKEN } = require("../config/config");
 const mongoose = require("mongoose");
 const Activity = require("../models/activity");
-const Log = require("../models/log");
 const Student = require("../models/student");
 const Teacher = require("../models/teacher");
 const {
@@ -235,16 +234,16 @@ module.exports.changeGrade = async (req, res) => {
       const logMessage = {
         date: date,
         sender: "",
-        text: `Grade for activity ${activity.name} changed to ${req.body.grade}`,
-        type: "grade_update",
+        text: `You received ${req.body.grade}/${activity.max_points} for activity "${activity.name}"`,
+        type: "grade_added",
       };
       if (index >= 0) {
+        logMessage.text = `Grade for activity "${activity.name}" changed from ${grades[index].grade}/${activity.max_points} to ${req.body.grade}/${activity.max_points}`;
+        logMessage.type = "grade_update";
         grades[index].grade = req.body.grade;
       } else {
         // activity not found so we need to add new one
         grades.push({ grade: req.body.grade, activity: id });
-        logMessage.text = `You received ${req.body.grade} for activity ${activity.name}`;
-        logMessage.type = "grade_added";
       }
       logs.push(logMessage);
       await Student.updateOne(

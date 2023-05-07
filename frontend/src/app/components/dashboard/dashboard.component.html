@@ -1,24 +1,39 @@
 <div class="d-flex-grow-2 p-2 container-fluid">
   <div class="row mx-5">
-    <div class="col-md-4">
+    <div class="col-md-6">
       <table class="table table-hover">
         <thead>
           <tr>
-            <th scope="col">Aktywność</th>
-            <th scope="col">Data</th>
-            <th scope="col">Punkty</th>
+            <th scope="col">Type</th>
+            <th scope="col">Date</th>
+            <th scope="col">Information</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="cart-item" *ngFor="let item of tasks | async; index as i">
-            <td>{{ item.task }}</td>
-            <td>{{ item.date }}</td>
-            <td>{{ item.points }}</td>
+          <tr class="cart-item" *ngFor="let log of logs; index as i">
+            <td>
+              {{
+                (log.type.charAt(0).toUpperCase() + log.type.slice(1)).replace(
+                  "_",
+                  " "
+                )
+              }}
+            </td>
+            <td>
+              {{
+                log.date
+                  .toString()
+                  .replace("T", " ")
+                  .replace("Z", "")
+                  .split(".")[0]
+              }}
+            </td>
+            <td>{{ log.text }}</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="col-md-8 h-1000">
+    <div class="col-md-6">
       <div class="card-body">
         <h5 class="card-title">Card title</h5>
         <p class="card-text">

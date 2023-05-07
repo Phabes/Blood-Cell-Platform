@@ -20,10 +20,6 @@ export class MessagesComponent {
     this.messageService
       .getStudentMessages(this.userService.getUserID())
       .subscribe((data) => {
-        // if(data.action=="MESSAGES_RETRIEVED"){
-
-        // }
-        console.log(data);
         this.messages = data;
       });
   }

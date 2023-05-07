@@ -14,7 +14,7 @@ module.exports.addActivity = async (req, res) => {
   try {
     const activity = req.body;
     const newActivity = new Activity(activity);
-    newActivity.save();
+    await newActivity.save();
     const logMessage = {
       date: activity.created_on,
       sender: "",
@@ -22,7 +22,7 @@ module.exports.addActivity = async (req, res) => {
       type: "activity",
     };
     const log = new Log(logMessage);
-    log.save();
+    await log.save();
     res.status(200).json(newActivity);
   } catch (err) {
     res.status(500).json({ action: "Something wrong" });
