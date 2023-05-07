@@ -4,7 +4,6 @@ import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { HomeComponent } from "./components/home/home.component";
 import { LeaderboardComponent } from "./components/leaderboard/leaderboard.component";
 import { LoginComponent } from "./components/login/login.component";
-import { ProfilComponent } from "./components/profil/profil.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
 import { TeacherPanelComponent } from "./components/teacher-panel/teacher-panel.component";
 import { UserCartComponent } from "./components/user-cart/user-cart.component";
@@ -12,13 +11,14 @@ import { LoggedGuard, PermissionsGuard } from "./guards/permissions.guard";
 import { CategoriesComponent } from "./components/categories/categories.component";
 import { ActivitiesComponent } from "./components/activities/activities.component";
 import { MessagesComponent } from "./components/messages/messages.component";
+import { ProfileComponent } from "./components/profile/profile.component";
 
 const routes: Routes = [
   { path: "", component: HomeComponent },
   {
-    path: "profil",
-    component: ProfilComponent,
-    canActivate: [LoggedGuard(true)],
+    path: "profile",
+    component: ProfileComponent,
+    canActivate: [PermissionsGuard(["student", "teacher"])],
   },
   {
     path: "categories",
@@ -33,7 +33,7 @@ const routes: Routes = [
   {
     path: "dashboard",
     component: DashboardComponent,
-    canActivate: [PermissionsGuard(["teacher"])],
+    canActivate: [PermissionsGuard(["student"])],
   },
   {
     path: "leaderboard",

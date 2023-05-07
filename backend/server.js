@@ -6,6 +6,7 @@ const userRoute = require("./routes/user");
 const messageRoute = require("./routes/message");
 const activityRoute = require("./routes/activity");
 const categoryRoute = require("./routes/category");
+const logRoute = require("./routes/log");
 
 const { CONNECTION_URL } = require("./config/config");
 const PORT = process.env.PORT || 4000;
@@ -25,6 +26,7 @@ app.use("/user", userRoute);
 app.use("/message", messageRoute);
 app.use("/activity", activityRoute);
 app.use("/category", categoryRoute);
+app.use("/log", logRoute);
 mongoose
   .connect(CONNECTION_URL, {
     useNewUrlParser: true,

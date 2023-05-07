@@ -24,7 +24,7 @@
             >Profile</a
           >
         </li>
-        <li class="nav-item" *ngIf="loggedIn && isTeacher">
+        <li class="nav-item" *ngIf="loggedIn && !isTeacher">
           <a
             class="nav-link"
             href="#"
@@ -33,7 +33,7 @@
             >Dashboard</a
           >
         </li>
-        <li class="nav-item" *ngIf="loggedIn">
+        <li class="nav-item" *ngIf="loggedIn && isTeacher">
           <a
             class="nav-link"
             href="#"

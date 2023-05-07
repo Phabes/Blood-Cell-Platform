@@ -62,7 +62,6 @@ export class LeaderboardComponent {
     this.actService.getHeadersInfo().subscribe((e) => {
       this.value = e.header_cells;
       this.grades = this.cartService.studentGrades(e.header_cells);
-      console.log(e.header_cells);
     });
   }
 
@@ -70,14 +69,12 @@ export class LeaderboardComponent {
     this.users$ = this.cartService.getItems();
 
     this.userService.getStudents().subscribe((users) => {
-      console.log(users[0]);
       this.data = users;
     });
 
     this.actService.getHeadersInfo().subscribe((e) => {
       this.value = e.header_cells;
       this.grades = this.cartService.studentGrades(e.header_cells);
-      console.log(e.header_cells);
     });
   }
 
@@ -91,7 +88,6 @@ export class LeaderboardComponent {
     this.SearchNick = this.Search.value.name;
     this.pointsMin = this.Search.value.minPoints;
     this.pointsMax = this.Search.value.maxPoints;
-    console.log(this.Search.value);
   }
 
   public saveDataInCSV(name: string): void {

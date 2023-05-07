@@ -40,7 +40,13 @@ export class ActivitiesService {
       created_on: new Date(),
     } as Activity;
     try {
-      const response = await firstValueFrom(this.http.post<any>(`${SERVER_NAME}/activity/add`, newActivity, httpOptions));
+      const response = await firstValueFrom(
+        this.http.post<any>(
+          `${SERVER_NAME}/activity/add`,
+          newActivity,
+          httpOptions
+        )
+      );
 
       const categoryID = data.categoryID;
       const request = {
@@ -48,15 +54,18 @@ export class ActivitiesService {
         activityID: response._id,
       };
 
-      const finalResponse = await firstValueFrom(this.http.post<any>(`${SERVER_NAME}/category/assign_activity`,request,httpOptions,));
+      const finalResponse = await firstValueFrom(
+        this.http.post<any>(
+          `${SERVER_NAME}/category/assign_activity`,
+          request,
+          httpOptions
+        )
+      );
       return finalResponse.action;
-        
     } catch (error) {
       console.log("Something wrong!");
       return "SERWER ERROR";
     }
-      
-      
   }
 
   clearCart() {
@@ -226,7 +235,7 @@ export class ActivitiesService {
       row_span: number;
       col_span: number;
       max_points: number;
-      deadline: Date|null;
+      deadline: Date | null;
     }[][] = [];
     let nextCategories: Array<string> = [];
     nextCategories = mainCategories;
@@ -295,7 +304,7 @@ export class ActivitiesService {
           row_span: 1,
           col_span: 1,
           max_points: activity.max_points,
-          deadline: activity.deadline
+          deadline: activity.deadline,
         });
       }
     });

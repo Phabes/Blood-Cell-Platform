@@ -14,7 +14,13 @@
         <td>{{ message.text }}</td>
         <td>{{ message.sender }}</td>
         <td>
-          {{ message.date.toString().replace("T", " ").replace("Z", "") }}
+          {{
+            message.date
+              .toString()
+              .replace("T", " ")
+              .replace("Z", "")
+              .split(".")[0]
+          }}
         </td>
       </tr>
     </tbody>

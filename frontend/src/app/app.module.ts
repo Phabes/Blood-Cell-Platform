@@ -11,7 +11,6 @@ import { DashboardComponent } from "./components/dashboard/dashboard.component";
 import { LeaderboardComponent } from "./components/leaderboard/leaderboard.component";
 import { LoginComponent } from "./components/login/login.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
-import { ProfilComponent } from "./components/profil/profil.component";
 import { UserCartComponent } from "./components/user-cart/user-cart.component";
 import { TeacherPanelComponent } from "./components/teacher-panel/teacher-panel.component";
 import { ActivitiesComponent } from "./components/activities/activities.component";
@@ -20,6 +19,7 @@ import { SimpleSearchPipe } from "./simple-search.pipe";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatTooltipModule } from "@angular/material/tooltip";
 import { MessagesComponent } from "./components/messages/messages.component";
+import { ProfileComponent } from "./components/profile/profile.component";
 
 @NgModule({
   declarations: [
@@ -30,13 +30,13 @@ import { MessagesComponent } from "./components/messages/messages.component";
     LeaderboardComponent,
     LoginComponent,
     RegistrationComponent,
-    ProfilComponent,
     UserCartComponent,
     TeacherPanelComponent,
     ActivitiesComponent,
     CategoriesComponent,
     SimpleSearchPipe,
-    MessagesComponent
+    MessagesComponent,
+    ProfileComponent,
   ],
   imports: [
     BrowserModule,

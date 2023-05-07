@@ -10,16 +10,16 @@ import { UserService } from "src/app/services/user.service";
 })
 export class LoginComponent {
   loginForm = this.fb.group({
-    email: [
-      "a@a.pl",
-      Validators.compose([Validators.required, Validators.email]),
-    ],
-    password: ["123123123", Validators.required],
     // email: [
-    //   'qwe@qwe.qwe',
+    //   "a@a.pl",
     //   Validators.compose([Validators.required, Validators.email]),
     // ],
-    // password: ['Qweqweqwe1', Validators.required],
+    // password: ["123123123", Validators.required],
+    email: [
+      "qwe@qwe.qwe",
+      Validators.compose([Validators.required, Validators.email]),
+    ],
+    password: ["Qweqweqwe1", Validators.required],
     rememberMe: [""],
   });
   errors: string[] = [];
