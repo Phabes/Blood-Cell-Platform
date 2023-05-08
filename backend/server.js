@@ -16,7 +16,7 @@ const app = express();
 app.use(
   cors({
     credentials: true,
-    origin: "*",
+    origin: "https://lucky-salamander-68ba59.netlify.app",
   })
 );
 app.use(cookieParser());
