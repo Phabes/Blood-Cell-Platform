@@ -1,10 +1,10 @@
-FROM node:18-alpine
+FROM node:18-alpine AS node
 
 WORKDIR /frontend
-COPY . /frontend
-
+COPY . .
 RUN npm install 
+RUN npm run build --prod
 
-EXPOSE 4200
+FROM nginx:1.23.4-alpine
+COPY --from=node /frontend/dist/io-project-app /usr/share/nginx/html
 
-CMD [ "npm", "run","dockerStart"]
