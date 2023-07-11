@@ -19,17 +19,29 @@ const httpOptions = {
 })
 export class ActivitiesService {
   items: Activity[] = [];
-
+  genPoints = 0;
   constructor(private http: HttpClient) {}
 
   addToCart(activity: Activity) {
     this.items.push(activity);
   }
 
-  getItems() {
-    return this.http.get<{ date: Date; task: string; points: number }[]>(
-      "../assets/activities.json"
-    );
+  // getItems() {
+  //   return this.http.get<{ date: Date; task: string; points: number }[]>(
+  //     "../assets/activities.json"
+  //   );
+  // }
+
+  getMaxPoints() {
+    const act = this.getActivities();
+    act.subscribe((e) => {
+      for (let i = 0; i < e.length; i++) {
+        this.genPoints += e[i].max_points;
+      }
+      console.log(this.genPoints);
+      return this.genPoints;
+    });
+    return this.genPoints;
   }
 
   async addActivity(data: any) {
@@ -76,7 +88,8 @@ export class ActivitiesService {
   getCategories(): Observable<Category[]> {
     return this.http.get<Category[]>(`${SERVER_NAME}/category/all`);
   }
-  private getActivities(): Observable<Activity[]> {
+
+  getActivities(): Observable<Activity[]> {
     return this.http.get<Activity[]>(`${SERVER_NAME}/activity/all`);
   }
 
@@ -99,23 +112,37 @@ export class ActivitiesService {
     return subject.asObservable();
   }
 
-  getHeadersInfo() {
+  getHeadersInfo(hiddenCategories: string[] ) {
     const subject = new Subject<Result>();
     this.getCategories().subscribe((categories) => {
       let width = 0;
       let height = 0;
       let mainCategories: Array<string> = [];
-      const subCategories: Array<string> = [];
+      let subCategories: Array<string> = [];
 
       // Get info about root categories and width of the header
       categories.forEach((category: Category) => {
+        if (
+          (category.activities.length === 0 &&
+          category.sub_categories.length === 0)  
+          || hiddenCategories.includes(category._id,0)
+        ){
+
+          return;
+        
+        }
         category.row_span = null;
         category.col_span = null;
         category.level = 0;
         mainCategories.push(category._id);
         subCategories.push(...category.sub_categories);
         width = category.activities.length;
+
       });
+      subCategories = subCategories.filter((name) => {
+        return !hiddenCategories.includes(name);
+      });
+      console.log(subCategories);
       mainCategories = mainCategories.filter((name) => {
         return !subCategories.includes(name);
       });
@@ -153,8 +180,9 @@ export class ActivitiesService {
       return cat._id === id;
     })[0];
     category.level = Math.max(category.level, level);
-    // console.log(category.name  , category.col_span)
-    if (category.col_span !== null) return category.col_span;
+    if (category.col_span !== null && category.col_span !== undefined) {
+      return category.col_span;
+    }
     if (
       category.activities.length === 0 &&
       category.sub_categories.length === 0
@@ -175,7 +203,6 @@ export class ActivitiesService {
         level + 1
       );
     });
-
     category.col_span = col_span;
     return col_span;
   }
@@ -248,6 +275,12 @@ export class ActivitiesService {
           const category: Category = categories.filter((cat) => {
             return cat._id === cat_id;
           })[0];
+          if (
+            (category.activities.length === 0 &&
+              category.sub_categories.length === 0) ||
+            category.col_span === 0
+          )
+            return;
           header_categories[i].push({
             id: cat_id,
             name: category.name,
@@ -306,8 +339,10 @@ export class ActivitiesService {
           max_points: activity.max_points,
           deadline: activity.deadline,
         });
+        this.genPoints += activity.max_points;
       }
     });
+
     category.sub_categories.forEach((cat_id) => {
       const next_cat: Category = categories.filter((cat) => {
         return cat._id === cat_id;

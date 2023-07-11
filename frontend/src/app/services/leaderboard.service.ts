@@ -21,21 +21,29 @@ export class LeaderBoardService {
     return this.http.get<Student[]>(`${SERVER_NAME}/user/students`);
   }
 
-  studentGrades(value: Cell[][]): {
+  studentGrades(
+    value: Cell[][],
+    hiddenCategories: string[]
+  ): {
     nick: string;
     grades: Array<number | null>;
+    sumPoints: number;
   }[] {
-    const result: { nick: string; grades: Array<number | null> }[] = [];
-    this.actService.getHeadersInfo().subscribe((e) => {
+    const result: {
+      nick: string;
+      grades: Array<number | null>;
+      sumPoints: number;
+    }[] = [];
+    this.actService.getHeadersInfo(hiddenCategories).subscribe((e) => {
       this.value = e.header_cells[length - 1];
       this.items.subscribe((student) => {
         for (let i = 0; i < student.length; i++) {
           result.push({
             nick: student[i].nick,
             grades: [],
+            sumPoints: 0,
           });
-          //  console.log(student[i] , value , value.length)
-          //  console.log(value[value.length-1])
+
           value[value.length - 1].forEach((e) => {
             let tmp = null;
             for (let k = 0; k < student[i].grades.length; k++) {
@@ -46,6 +54,7 @@ export class LeaderBoardService {
               }
             }
             result[i].grades.push(tmp);
+            if (tmp !== null) result[i].sumPoints += Number(tmp);
           });
         }
       });

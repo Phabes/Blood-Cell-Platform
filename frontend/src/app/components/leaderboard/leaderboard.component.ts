@@ -1,5 +1,6 @@
 import { Component } from "@angular/core";
 import { Observable } from "rxjs";
+import { Options } from "src/app/models/options";
 import { LeaderBoardService } from "src/app/services/leaderboard.service";
 import { CsvService } from "src/app/services/csv.service";
 import { Student } from "src/app/models/student";
@@ -20,10 +21,26 @@ export class LeaderboardComponent {
   pointsMax: number | null | undefined;
   pointsMin: number | null | undefined;
   data!: Student[];
-
+  hidden_cols!: boolean[];
+  mess: string | undefined;
   value!: Cell[][];
-  grades!: { nick: string; grades: (number | null)[] }[];
+  grades!: { nick: string; grades: (number | null)[]; sumPoints: number }[];
   SearchNick: any;
+  generalMaxPoints = 0;
+
+  options: Options = {
+    orderBy: "Name",
+    orderDir: "ASC",
+    page: 1,
+    size: 20,
+  };
+  logsSize = 0;
+  lowerLimit = 0;
+  upperLimit = 0;
+  isAsc = false;
+  last_sort = "";
+  isTeacher = false;
+  hiddenCategories: string[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -39,29 +56,35 @@ export class LeaderboardComponent {
     new_grade: number | null,
     j: number
   ) {
-    //  const j = 0;
-    //  const student_name = "Huan";
-    //  const new_grade = 5;
     console.log(event.target.value, student_name, j);
-    if (event.target.value) {
-      const idx = this.value.length;
-      const act = this.value[idx - 1][j].id;
-      const max_points = this.value[idx - 1][j].max_points;
-      if (event.target.value >= 0 && event.target.value <= max_points) {
-        this.userService.changeGrade(student_name, event.target.value, act);
-      } else {
-        window.alert("Podano niewłaściwą ilość punktów");
-      }
+
+    const idx = this.value.length;
+    const act = this.value[idx - 1][j].id;
+    const max_points = this.value[idx - 1][j].max_points;
+
+    if (
+      (event.target.value === "" || event.target.value >= 0) &&
+      event.target.value <= max_points
+    ) {
+      this.userService
+        .changeGrade(student_name, event.target.value, act)
+        .subscribe((data) => {
+          console.log(data);
+        });
+    } else {
+      window.alert("Wrong points number!");
     }
 
     this.userService.getStudents().subscribe((users) => {
-      console.log(users[0]);
       this.data = users;
     });
 
-    this.actService.getHeadersInfo().subscribe((e) => {
+    this.actService.getHeadersInfo(this.hiddenCategories).subscribe((e) => {
       this.value = e.header_cells;
-      this.grades = this.cartService.studentGrades(e.header_cells);
+      this.grades = this.cartService.studentGrades(
+        e.header_cells,
+        this.hiddenCategories
+      );
     });
   }
 
@@ -70,11 +93,34 @@ export class LeaderboardComponent {
 
     this.userService.getStudents().subscribe((users) => {
       this.data = users;
+      this.logsSize = users.length;
     });
 
-    this.actService.getHeadersInfo().subscribe((e) => {
+    this.actService.getHeadersInfo(this.hiddenCategories).subscribe((e) => {
       this.value = e.header_cells;
-      this.grades = this.cartService.studentGrades(e.header_cells);
+      this.grades = this.cartService.studentGrades(
+        e.header_cells,
+        this.hiddenCategories
+      );
+    });
+
+    this.getPoints();
+
+    this.reload();
+    if (this.userService.getUserRole() == "teacher") {
+      this.isTeacher = true;
+    }
+  }
+
+  getPoints() {
+    const act = this.actService.getActivities().toPromise();
+    act.then((e) => {
+      if (e != undefined) {
+        for (let i = 0; i < e.length; i++) {
+          if (!this.hiddenCategories.includes(e[i]._id))
+            this.generalMaxPoints += e[i].max_points;
+        }
+      }
     });
   }
 
@@ -130,5 +176,122 @@ export class LeaderboardComponent {
       return false;
     }
     return false;
+  }
+
+  reload() {
+    this.userService.getStudents().subscribe((users) => {
+      this.logsSize = users.length;
+      this.lowerLimit = (this.options.page - 1) * this.options.size;
+      this.upperLimit = Math.min(
+        users.length,
+        (this.options.page - 1) * this.options.size + this.options.size
+      );
+
+      this.data = users.slice(
+        (this.options.page - 1) * this.options.size,
+        Math.min(
+          users.length,
+          (this.options.page - 1) * this.options.size + this.options.size
+        )
+      );
+    });
+  }
+
+  to(page: number) {
+    this.options.page = page;
+    this.reload();
+  }
+
+  next() {
+    this.options.page++;
+    this.reload();
+  }
+
+  prev() {
+    this.options.page--;
+    this.reload();
+  }
+
+  hide() {
+    //e.target.style.width = '10%';
+    //e.target.style.setProperty('text-indent', '100%');
+    //e.target.style.setProperty('white-space', 'nowrap');
+    //e.target.style.setProperty('overflow', 'hidden');
+  }
+
+  sortByName() {
+    if (this.last_sort == "name") {
+      this.isAsc = !this.isAsc;
+    }
+    this.last_sort = "name";
+    const slicedData = this.grades.slice();
+    this.grades = slicedData.sort((a, b) => {
+      return (a.nick < b.nick ? -1 : 1) * (this.isAsc ? 1 : -1);
+    });
+  }
+
+  sortByActivityIndex(index: number) {
+    if (this.last_sort == index.toString()) {
+      this.isAsc = !this.isAsc;
+    }
+    this.last_sort = index.toString();
+    const slicedData = this.grades.slice()!;
+    this.grades = slicedData.sort((a, b) => {
+      return (
+        ((a.grades[index] || 0) < (b.grades[index] || 0) ? -1 : 1) *
+        (this.isAsc ? 1 : -1)
+      );
+    });
+    this.grades.sort;
+  }
+
+  sortBySum() {
+    if (this.last_sort == "sum") {
+      this.isAsc = !this.isAsc;
+    }
+    this.last_sort = "sum";
+    const slicedData = this.grades.slice();
+    this.grades = slicedData.sort((a, b) => {
+      return (a.sumPoints < b.sumPoints ? -1 : 1) * (this.isAsc ? 1 : -1);
+    });
+  }
+
+  get numbers(): number[] {
+    const limit = Math.ceil(this.logsSize / this.options.size);
+    return Array.from({ length: limit }, (_, i) => i + 1);
+  }
+
+  public hintHide(cell: Cell) {
+    if (this.value[0].includes(cell)) {
+      return "Hide category";
+    }
+
+    return "";
+  }
+
+  hideCategory(category: Cell) {
+    if (this.value[0].includes(category)) {
+      this.hiddenCategories.push(category.id);
+
+      this.actService.getHeadersInfo(this.hiddenCategories).subscribe((e) => {
+        this.value = e.header_cells;
+        this.grades = this.cartService.studentGrades(
+          e.header_cells,
+          this.hiddenCategories
+        );
+      });
+      this.mess = "Category " + category.name + " is hidden";
+    }
+  }
+
+  clearHiddenCategories() {
+    this.hiddenCategories = [];
+    this.actService.getHeadersInfo(this.hiddenCategories).subscribe((e) => {
+      this.value = e.header_cells;
+      this.grades = this.cartService.studentGrades(
+        e.header_cells,
+        this.hiddenCategories
+      );
+    });
   }
 }

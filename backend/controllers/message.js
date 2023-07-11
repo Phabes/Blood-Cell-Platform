@@ -2,10 +2,14 @@ const Log = require("../models/log");
 const Message = require("../models/message");
 const Student = require("../models/student");
 const Teacher = require("../models/teacher");
+const { validateRequestBodyExistence, validatePastDate } = require("../validators/requestBodyValidator");
 
 module.exports.sendMessageToAll = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const { message } = req.body;
+    if (validateRequestBodyExistence([message.date, message.sender, message.text], res)) return;
+    if (validatePastDate(message.date, res)) return;
     const messageToAll = new Message(message);
     await messageToAll.save();
     message.type = "message";
@@ -20,8 +24,11 @@ module.exports.sendMessageToAll = async (req, res) => {
 };
 
 module.exports.sendMessageToOne = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const { message, receiver } = req.body;
+    if (validateRequestBodyExistence([message.date, message.sender, message.text, receiver], res)) return;
+    if (validatePastDate(message.date, res)) return;
     await Student.findByIdAndUpdate(receiver, {
       $addToSet: { messages: message },
     });
@@ -38,6 +45,7 @@ module.exports.sendMessageToOne = async (req, res) => {
 };
 
 module.exports.getAllStudentMessages = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const studentID = req.params.id;
     const messagesToAll = await Message.find({}, { _id: 0, __v: 0 });

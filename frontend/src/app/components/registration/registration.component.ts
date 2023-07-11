@@ -17,13 +17,13 @@ export class RegistrationComponent {
   registerForm = this.fb.group(
     {
       email: [
-        "test6@test.test",
+        "test@test.test2",
         Validators.compose([Validators.required, Validators.email]),
       ],
       firstName: ["Jan", Validators.required],
       lastName: ["Tomek", Validators.required],
       password: [
-        "zaq1@WSX",
+        "123123123",
         Validators.compose([Validators.required, Validators.minLength(8)]),
       ],
       type: ["student"],
@@ -51,7 +51,6 @@ export class RegistrationComponent {
         this.userService
           .registerStudent(this.registerForm)
           .subscribe((data) => {
-            console.log(data);
             if (data.action == "STUDENT_REGISTERED") {
               const user = {
                 _id: data._id,
@@ -72,8 +71,6 @@ export class RegistrationComponent {
         this.userService
           .registerTeacher(this.registerForm)
           .subscribe((data) => {
-            console.log(data);
-
             if (data.action == "TEACHER_REGISTERED") {
               const user = {
                 _id: data._id,

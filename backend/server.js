@@ -16,7 +16,13 @@ const app = express();
 app.use(
   cors({
     credentials: true,
+    // DEPLOYED
     origin: "https://lucky-salamander-68ba59.netlify.app",
+    // origin: "https://ioioioioapp.azurewebsites.net", // gumis deploy
+    // DOCKER_COMPOSE
+    // origin: "http://localhost",
+    // LOCAL (ng serve)
+    // origin: "http://localhost:4200",
   })
 );
 app.use(cookieParser());

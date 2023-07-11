@@ -1,43 +1,267 @@
-  <div class ="mx-5">
-    <button   class="btn btn-lg btn-primary btn-block" type="submit" (click)="saveDataInCSV('simpleData')">Save students list to csv</button>
-    <form [formGroup]="Search" class="form-activity-add row cell.max_points multi-range-field g-3" (ngSubmit)="onSubmit()" >
-      <div class="col-auto  py-2">        
-                
-                <input name="name" type="string" class="form-control"  placeholder="Nick" formControlName="name" />     
+<div class="mx-5" *ngIf="isTeacher">
+  <div class="row row-cols-1">
+    <div class="col-2 justify-content-center">
+      <button
+        class="btn btn-primary btn-block"
+        type="submit"
+        (click)="saveDataInCSV('simpleData')"
+      >
+        Save students list to csv
+      </button>
+    </div>
+    <div class="col-2 justify-content-center">
+      <button
+        class="btn btn-primary btn-block"
+        type="submit"
+        (click)="clearHiddenCategories()"
+      >
+        Show all categories
+      </button>
+    </div>
+    <form
+      [formGroup]="Search"
+      class="form-activity-add col-7 cell.max_points multi-range-field"
+      (ngSubmit)="onSubmit()"
+    >
+      <div class="row row-cols-1">
+        <div class="col-auto py-2">
+          <input
+            name="name"
+            type="string"
+            class="form-control"
+            placeholder="Nick"
+            formControlName="name"
+          />
+        </div>
+        <div class="col-auto py-2">
+          <input
+            name="minPoints"
+            type="number"
+            class="form-control"
+            placeholder="min Points"
+            min="0"
+            formControlName="minPoints"
+          />
+        </div>
+        <div class="col-auto py-2">
+          <input
+            name="maxPoints"
+            type="number"
+            class="form-control"
+            placeholder="max Points"
+            min="1"
+            formControlName="maxPoints"
+          />
+        </div>
+        <div class="col-auto px-0 py-2">
+          <button class="btn btn-primary mx-0 my-0" type="submit">
+            Filter
+          </button>
+        </div>
       </div>
-      <div class="col-auto  py-2">                 
-        <input name="minPoints" type="number" class="form-control"  placeholder="min Points"  min="0" formControlName="minPoints"      />     
-      </div>
-      <div class="col-auto  py-2">                 
-        <input name="maxPoints" type="number" class="form-control"  placeholder="max Points" min="1" formControlName="maxPoints"      />     
-      </div>
-      <div class="col-auto px-0 py-2">           
-      <button class="btn  btn-primary mx-0 my-0 " type="submit" >Filter</button>
+    </form>
+  </div>
+
+  <table id="data_table" class="table align-middle table-light" *ngIf="value">
+    <thead>
+      <tr class="border" *ngFor="let data of value; let i = index">
+        <td
+          class="text-center"
+          (click)="sortByName()"
+          *ngIf="i == 0"
+          [attr.rowspan]="1000"
+        >
+          Nick
+        </td>
+        <td
+          [matTooltip]="this.hintHide(cell)"
+          class="border text-center"
+          *ngFor="let cell of data; let i = index"
+          [attr.colspan]="cell.col_span"
+          [attr.rowspan]="cell.row_span"
+          [ngStyle]="{ 'background-color': this.isPastDeadlineColor(cell) }"
+        >
+          <div
+            class="row"
+            [matTooltip]="this.hintDeadline(cell)"
+            (click)="hideCategory(cell)"
+          >
+            <div class="auto-col">
+              {{ cell.name }}
+              {{
+                !cell.deadline
+                  ? ""
+                  : this.isPastDeadlineIcon(cell)
+                  ? "&#128274;"
+                  : "&#128336;"
+              }}
+            </div>
+            <div class="auto-col" *ngIf="cell.max_points != 0">
+              Max: {{ cell.max_points }}
+            </div>
+          </div>
+        </td>
+        <td
+          class="text-center"
+          (click)="sortBySum()"
+          *ngIf="i == 0"
+          [attr.rowspan]="1000"
+        >
+          Sum points Max: {{ generalMaxPoints }}
+        </td>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container
+        *ngFor="
+          let d of grades | simpleSearch : 'd.nick' : SearchNick;
+          let i = index
+        "
+      >
+        <tr class="border" *ngIf="i > lowerLimit - 1 && i < upperLimit">
+          <td [attr.rowspan]="1">{{ d.nick }}</td>
+          <td
+            class="border text-center"
+            *ngFor="let c of d.grades; let j = index"
+            [attr.colspan]="1"
+            [attr.rowspan]="1"
+          >
+            <input
+              type="text"
+              value="{{ c }}"
+              ng-model="text"
+              (keydown.enter)="change($event, d.nick, c, j)"
+              [style.backgroundColor]="
+                (c != null &&
+                  pointsMax != null &&
+                  pointsMin != null &&
+                  pointsMax >= c &&
+                  pointsMin <= c) ||
+                (pointsMin == null && pointsMax != null && pointsMax >= c) ||
+                (pointsMax == null && pointsMin != null && pointsMin <= c)
+                  ? '#eee00e'
+                  : '#eeeeee'
+              "
+            />
+          </td>
+          <td [attr.rowspan]="1">{{ d.sumPoints }}</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  <nav *ngIf="numbers.length > 1">
+    <ul class="pagination justify-content-center">
+      <li
+        id="prev"
+        class="page-item"
+        [ngClass]="{ disabled: options.page === 1 }"
+      >
+        <a class="page-link" (click)="prev()">Previous</a>
+      </li>
+      <ng-container *ngIf="data">
+        <li
+          class="page-item"
+          *ngFor="let number of numbers"
+          [ngClass]="{ active: options.page === number }"
+        >
+          <a class="page-link" (click)="to(number)">{{ number }}</a>
+        </li>
+      </ng-container>
+      <li
+        id="next"
+        class="page-item"
+        [ngClass]="{ disabled: options.page === numbers.length }"
+      >
+        <a class="page-link" (click)="next()" disabled="true">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>
+
+<div class="mx-5" *ngIf="!isTeacher">
+  <form
+    [formGroup]="Search"
+    class="form-activity-add row cell.max_points multi-range-field g-3"
+    (ngSubmit)="onSubmit()"
+  >
+    <div class="col-auto py-2">
+      <input
+        name="name"
+        type="string"
+        class="form-control"
+        placeholder="Nick"
+        formControlName="name"
+      />
+    </div>
+
+    <div class="col-auto px-0 py-2">
+      <button class="btn btn-primary mx-0 my-0" type="submit">Filter</button>
     </div>
   </form>
-      <table id="data_table" class='table  align-middle table-light' *ngIf="value">
-        <thead>
+  <table id="data_table" class="table align-middle table-light" *ngIf="value">
+    <thead>
+      <tr class="border" *ngFor="let data of value; let i = index">
+        <th class="text-center" *ngIf="i == 0" [attr.rowspan]="1000">Nr</th>
+        <th
+          class="text-center"
+          (click)="sortByName()"
+          *ngIf="i == 0"
+          [attr.rowspan]="1000"
+        >
+          Nick
+        </th>
 
-            <tr   class="border" *ngFor="let data of value; let i = index"> 
-              
-                <td  class= "text-center" *ngIf="i == 0" [attr.rowspan]="1000">Nick</td>
-                <td   class="border  text-center" *ngFor="let cell of data  " [attr.colspan]="cell.col_span" [attr.rowspan]="cell.row_span" [ngStyle]="{'background-color': (this.isPastDeadlineColor(cell))}">
-             
-                  <div  class="row " [matTooltip]="this.hintDeadline(cell)"> <div class="auto-col">{{ cell.name }} {{!cell.deadline ? "" : this.isPastDeadlineIcon(cell) ?	"&#128274;"	: "&#128336;"}}</div> <div  class="auto-col" *ngIf="cell.max_points != 0">Max: {{cell.max_points}}</div>  </div>
-                 
-             
-                </td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr   class="border " *ngFor="let d of grades    |  simpleSearch: 'd.nick': SearchNick ; let i = index  "> 
-              
-              <td  [attr.rowspan]="1" > {{d.nick}}  </td>
-              <td   class="border text-center" *ngFor="let c of d.grades ; let j = index" [attr.colspan]="1" [attr.rowspan]="1">
-                <input type="text"   value={{c}}  ng-model="text" (keydown.enter)="change($event, d.nick, c, j)"  [style.backgroundColor]=" ( ( c!=null && pointsMax !=null && pointsMin  !=null && pointsMax >=  c  && pointsMin <=  c )  || ( (pointsMin ==null && pointsMax !=null && pointsMax >=  c ) ||  ( pointsMax ==null && pointsMin  !=null  && pointsMin <=  c ) )  )? '#eee00e' : '#eeeeee'"> 
-              </td>
-          </tr>
-        </tbody>
-    </table>
- </div>
- 
+        <th
+          class="text-center"
+          (click)="sortBySum()"
+          *ngIf="i == 0"
+          [attr.rowspan]="1000"
+        >
+          Sum points Max: {{ generalMaxPoints }}
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <ng-container
+        *ngFor="
+          let d of grades | simpleSearch : 'd.nick' : SearchNick;
+          let i = index
+        "
+      >
+        <tr class="border" *ngIf="i > lowerLimit - 1 && i < upperLimit">
+          <td class="text-center" [attr.rowspan]="1">{{ i + 1 }}</td>
+          <td class="text-center" [attr.rowspan]="1">{{ d.nick }}</td>
+
+          <td class="text-center" [attr.rowspan]="1">{{ d.sumPoints }}</td>
+        </tr>
+      </ng-container>
+    </tbody>
+  </table>
+  <nav *ngIf="numbers.length > 1">
+    <ul class="pagination justify-content-center">
+      <li
+        id="prev"
+        class="page-item"
+        [ngClass]="{ disabled: options.page === 1 }"
+      >
+        <a class="page-link" (click)="prev()">Previous</a>
+      </li>
+      <ng-container *ngIf="data">
+        <li
+          class="page-item"
+          *ngFor="let number of numbers"
+          [ngClass]="{ active: options.page === number }"
+        >
+          <a class="page-link" (click)="to(number)">{{ number }}</a>
+        </li>
+      </ng-container>
+      <li
+        id="next"
+        class="page-item"
+        [ngClass]="{ disabled: options.page === numbers.length }"
+      >
+        <a class="page-link" (click)="next()" disabled="true">Next</a>
+      </li>
+    </ul>
+  </nav>
+</div>

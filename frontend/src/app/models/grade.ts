@@ -1,4 +1,5 @@
 export interface Grade {
-  id: string;
+  activity?: string;
+  student_id?: string;
   grade: number | null;
 }
