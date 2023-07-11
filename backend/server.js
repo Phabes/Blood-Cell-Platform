@@ -17,7 +17,8 @@ app.use(
   cors({
     credentials: true,
     // DEPLOYED
-    // origin: "https://ioioioioapp.azurewebsites.net",
+    // origin: "https://lucky-salamander-68ba59.netlify.app",
+    // origin: "https://ioioioioapp.azurewebsites.net", // gumis deploy
     // DOCKER_COMPOSE
     // origin: "http://localhost",
     // LOCAL (ng serve)
