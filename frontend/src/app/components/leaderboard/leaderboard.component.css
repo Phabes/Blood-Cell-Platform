@@ -1,25 +1,42 @@
-.one{
-    border-color: black;
-    border-style: solid;
+.one {
+  border-color: black;
+  border-style: solid;
 }
-.two{
-    border-color: black;
-    border-style: solid;
+
+.two {
+  border-color: black;
+  border-style: solid;
 }
 
 table td {
-    position: relative;
-  }
-  
+  position: relative;
+}
+
 table td input {
-    position: absolute;
-    display: block;
-    top:0;
-    left:0;
-    margin: 0;
-    height: 100%;
-    width: 100%;
-    border: none;
-    padding: 10px;
-    box-sizing: border-box;
-  }
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  border: none;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+shrunk {
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  margin: 0;
+  height: 100%;
+  width: 10%;
+  border: none;
+  padding: 10px;
+  box-sizing: border-box;
+}

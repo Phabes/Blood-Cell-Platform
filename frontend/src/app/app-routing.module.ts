@@ -6,7 +6,6 @@ import { LeaderboardComponent } from "./components/leaderboard/leaderboard.compo
 import { LoginComponent } from "./components/login/login.component";
 import { RegistrationComponent } from "./components/registration/registration.component";
 import { TeacherPanelComponent } from "./components/teacher-panel/teacher-panel.component";
-import { UserCartComponent } from "./components/user-cart/user-cart.component";
 import { LoggedGuard, PermissionsGuard } from "./guards/permissions.guard";
 import { CategoriesComponent } from "./components/categories/categories.component";
 import { ActivitiesComponent } from "./components/activities/activities.component";
@@ -38,7 +37,8 @@ const routes: Routes = [
   {
     path: "leaderboard",
     component: LeaderboardComponent,
-    canActivate: [PermissionsGuard(["teacher"])],
+    //canActivate: [LoggedGuard(false)],
+    canActivate: [PermissionsGuard(["student", "teacher"])],
   },
   {
     path: "teacherpanel",
@@ -49,11 +49,6 @@ const routes: Routes = [
     path: "registration",
     component: RegistrationComponent,
     canActivate: [LoggedGuard(false)],
-  },
-  {
-    path: "cart",
-    component: UserCartComponent,
-    canActivate: [LoggedGuard(true)],
   },
   {
     path: "login",

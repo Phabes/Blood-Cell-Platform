@@ -15,11 +15,16 @@ export class LoginComponent {
     //   Validators.compose([Validators.required, Validators.email]),
     // ],
     // password: ["123123123", Validators.required],
+    // email: [
+    //   "qwe@qwe.qwe",
+    //   Validators.compose([Validators.required, Validators.email]),
+    // ],
+    // password: ["123123123", Validators.required],
     email: [
-      "qwe@qwe.qwe",
+      "test@test.test2",
       Validators.compose([Validators.required, Validators.email]),
     ],
-    password: ["Qweqweqwe1", Validators.required],
+    password: ["123123123", Validators.required],
     rememberMe: [""],
   });
   errors: string[] = [];

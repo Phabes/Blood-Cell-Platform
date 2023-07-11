@@ -10,6 +10,7 @@ const {
 } = require("../validators/registerValidator");
 
 module.exports.registerStudent = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const { newUser } = req.body;
     const { isValid, message } = validateRegisterCredentials(
@@ -18,7 +19,6 @@ module.exports.registerStudent = async (req, res) => {
     );
     if (!isValid) {
       const errorMessages = message.join("\r\n");
-      console.log(errorMessages);
       res.status(200).json({
         action: "USER_VALIDATION_ERROR",
         errorMessages: errorMessages,
@@ -34,15 +34,19 @@ module.exports.registerStudent = async (req, res) => {
 
     const checkStudent = await Student.findOne({ email: newUser.email });
     if (checkStudent == null) {
-      console.log("student not null");
       const user = new Student(newUser);
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(user.password, salt);
       await user.save();
-      const token = jwt.sign({ id: user._id }, SECRET, {
+      const token = jwt.sign({ id: user._id, role: "student" }, SECRET, {
         expiresIn: MAX_AGE,
       });
-      res.cookie("token", token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: MAX_AGE * 1000,
+        sameSite: "none",
+        secure: true,
+      });
       res.status(200).json({
         action: "STUDENT_REGISTERED",
         _id: user._id,
@@ -58,6 +62,7 @@ module.exports.registerStudent = async (req, res) => {
 };
 
 module.exports.registerTeacher = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const { newUser } = req.body;
     const { isValid, message } = validateRegisterCredentials(
@@ -66,7 +71,7 @@ module.exports.registerTeacher = async (req, res) => {
     );
     if (!isValid) {
       const errorMessages = message.join("\r\n");
-      res.status(400).json({
+      res.status(200).json({
         action: "USER_VALIDATION_ERROR",
         errorMessages: errorMessages,
       });
@@ -84,10 +89,15 @@ module.exports.registerTeacher = async (req, res) => {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(user.password, salt);
       await user.save();
-      const token = jwt.sign({ id: user._id }, SECRET, {
+      const token = jwt.sign({ id: user._id, role: "teacher" }, SECRET, {
         expiresIn: MAX_AGE,
       });
-      res.cookie("token", token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
+      res.cookie("token", token, {
+        httpOnly: true,
+        maxAge: MAX_AGE * 1000,
+        sameSite: "none",
+        secure: true,
+      });
       res.status(200).json({
         action: "TEACHER_REGISTERED",
         _id: user._id,
@@ -103,6 +113,7 @@ module.exports.registerTeacher = async (req, res) => {
 };
 
 module.exports.loginUser = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const { email, password } = req.body;
     const student = await Student.findOne({ email: email });
@@ -112,7 +123,12 @@ module.exports.loginUser = async (req, res) => {
         const token = jwt.sign({ id: student._id, role: "student" }, SECRET, {
           expiresIn: MAX_AGE,
         });
-        res.cookie("token", token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
+        res.cookie("token", token, {
+          httpOnly: true,
+          maxAge: MAX_AGE * 1000,
+          sameSite: "none",
+          secure: true,
+        });
         res.status(200).json({
           action: "STUDENT_LOGGED",
           _id: student._id,
@@ -129,7 +145,12 @@ module.exports.loginUser = async (req, res) => {
         const token = jwt.sign({ id: teacher._id, role: "teacher" }, SECRET, {
           expiresIn: MAX_AGE,
         });
-        res.cookie("token", token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
+        res.cookie("token", token, {
+          httpOnly: true,
+          maxAge: MAX_AGE * 1000,
+          sameSite: "none",
+          secure: true,
+        });
         res.status(200).json({
           action: "TEACHER_LOGGED",
           _id: teacher._id,
@@ -144,6 +165,7 @@ module.exports.loginUser = async (req, res) => {
 };
 
 module.exports.getStudents = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const students = await Student.find({}, { password: 0 });
     res.status(200).json(students);
@@ -152,7 +174,18 @@ module.exports.getStudents = async (req, res) => {
   }
 };
 
+module.exports.getTeachers = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  try {
+    const teachers = await Teacher.find({}, { password: 0 });
+    res.status(200).json(teachers);
+  } catch (err) {
+    res.status(500).json({ action: "SOMETHING WRONG" });
+  }
+};
+
 module.exports.getCommits = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const { studentsCommitData } = req.body;
     await Promise.all(
@@ -189,6 +222,7 @@ module.exports.getCommits = async (req, res) => {
 };
 
 module.exports.findUser = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   const { role, _id } = res.locals;
   if (role == "teacher") {
     const teacher = await Teacher.findById(_id);
@@ -212,44 +246,52 @@ module.exports.findUser = async (req, res) => {
 };
 
 module.exports.logoutUser = async (req, res) => {
-  res.cookie("token", "", { httpOnly: true, maxAge: 1 });
+  res.header("Access-Control-Allow-Credentials", true);
+  res.cookie("token", "", {
+    httpOnly: true,
+    maxAge: 1,
+    sameSite: "none",
+    secure: true,
+  });
   res.status(200).json({ action: "USER_LOGOUT" });
 };
 
 module.exports.changeGrade = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
-    const student = await Student.findOne({ nick: req.body.nick });
-    const id = new mongoose.Types.ObjectId(req.body.act);
+    const { nick, act, grade } = req.body;
+    const student = await Student.findOne({ nick: nick });
+    const id = new mongoose.Types.ObjectId(act);
 
     const studentId = student._id;
     const activity = await Activity.findOne({ _id: id });
 
     if (student && activity) {
       const grades = student.grades;
-      const index = grades.findIndex(
-        (e) => e.activity.valueOf() === req.body.act
-      );
+      const index = grades.findIndex((e) => e.activity.valueOf() === act);
       const date = new Date();
       const logs = student.logs;
       const logMessage = {
         date: date,
         sender: "",
-        text: `You received ${req.body.grade}/${activity.max_points} for activity "${activity.name}"`,
+        text: `You received ${grade}/${activity.max_points} for activity "${activity.name}"`,
         type: "grade_added",
       };
       if (index >= 0) {
-        logMessage.text = `Grade for activity "${activity.name}" changed from ${grades[index].grade}/${activity.max_points} to ${req.body.grade}/${activity.max_points}`;
+        if (grades[index].grade != "") {
+          if (grade != "")
+            logMessage.text = `Grade for activity "${activity.name}" changed from ${grades[index].grade}/${activity.max_points} to ${grade}/${activity.max_points}`;
+          else
+            logMessage.text = `Grade for activity "${activity.name} deleted"`;
+        }
         logMessage.type = "grade_update";
-        grades[index].grade = req.body.grade;
+        grades[index].grade = grade;
       } else {
         // activity not found so we need to add new one
-        grades.push({ grade: req.body.grade, activity: id });
+        grades.push({ grade: grade, activity: id });
       }
       logs.push(logMessage);
-      await Student.updateOne(
-        { nick: req.body.nick },
-        { grades: grades, logs: logs }
-      );
+      await Student.updateOne({ nick: nick }, { grades: grades, logs: logs });
       // update also activites db
 
       const grades_ = activity.grades;
@@ -257,9 +299,9 @@ module.exports.changeGrade = async (req, res) => {
         (e) => e.student_id.valueOf() === studentId.valueOf()
       );
       if (index_ >= 0) {
-        grades_[index_].grade = req.body.grade;
+        grades_[index_].grade = grade;
       } else {
-        grades_.push({ student_id: studentId, grade: req.body.grade });
+        grades_.push({ student_id: studentId, grade: grade });
       }
       await Activity.updateOne({ _id: id }, { grades: grades_ });
 
@@ -270,5 +312,73 @@ module.exports.changeGrade = async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ action: "something wrong" });
+  }
+};
+
+module.exports.getOneStudent = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
+  try {
+    const studentID = req.params.id;
+    const studentData = await Student.findById(studentID);
+
+    if (studentData) {
+      res.status(200).json(studentData);
+    } else {
+      res.status(500).json({ action: "student not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ action: "something wrong" });
+  }
+};
+
+module.exports.getOneTeacher = async (req, res) => {
+  try {
+    const teacherID = req.params.id;
+    const teacherData = await Teacher.findById(teacherID);
+
+    if (teacherData) {
+      res.status(200).json(teacherData);
+    } else {
+      res.status(500).json({ action: "teacher not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ action: "something wrong" });
+  }
+};
+
+module.exports.changePassword = async (req, res) => {
+  const { id, newpassword } = req.body;
+
+  const student = await Student.findOne({ _id: id });
+
+  if (student) {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const password = await bcrypt.hash(newpassword, salt);
+
+      await Student.updateOne({ _id: id }, { password: password });
+
+      res.status(200).json({ action: "Password changed!" });
+    } catch (err) {
+      res.status(500).json({ action: "something wrong" });
+    }
+    return res;
+  }
+  const user = await Teacher.findOne({ _id: id });
+
+  if (user) {
+    if (user) {
+      try {
+        const salt = await bcrypt.genSalt(10);
+        const password = await bcrypt.hash(newpassword, salt);
+
+        await Teacher.updateOne({ _id: id }, { password: password });
+
+        res.status(200).json({ action: "Password changed!" });
+      } catch (err) {
+        res.status(500).json({ action: "something wrong" });
+      }
+      return res;
+    }
   }
 };

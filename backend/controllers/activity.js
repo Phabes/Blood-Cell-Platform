@@ -1,7 +1,12 @@
 const Activity = require("../models/activity");
 const Log = require("../models/log");
+const {
+  validateRequestBodyExistence,
+  validatePastDate,
+} = require("../validators/requestBodyValidator");
 
 module.exports.getAllActivities = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const activities = await Activity.find();
     res.status(200).json(activities);
@@ -11,8 +16,26 @@ module.exports.getAllActivities = async (req, res) => {
 };
 
 module.exports.addActivity = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const activity = req.body;
+    if (
+      validateRequestBodyExistence(
+        [activity.name, activity.max_points, activity.created_on],
+        res
+      )
+    )
+      return;
+    if (validatePastDate(activity.created_on, res)) return;
+    if (activity.max_points < 1) {
+      res
+        .status(400)
+        .json({
+          action:
+            "Wrong data input - max_points should be greater or equal to 1",
+        });
+      return;
+    }
     const newActivity = new Activity(activity);
     await newActivity.save();
     const logMessage = {

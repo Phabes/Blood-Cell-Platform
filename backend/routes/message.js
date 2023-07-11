@@ -4,11 +4,12 @@ const {
   sendMessageToOne,
   getAllStudentMessages,
 } = require("../controllers/message");
+const { requireAuth } = require("../middleware/authMiddleware");
 
 const router = Router();
 
-router.get("/:id", getAllStudentMessages);
-router.post("/all", sendMessageToAll);
-router.post("/one", sendMessageToOne);
+router.get("/:id", requireAuth, getAllStudentMessages);
+router.post("/all", requireAuth, sendMessageToAll);
+router.post("/one", requireAuth, sendMessageToOne);
 
 module.exports = router;

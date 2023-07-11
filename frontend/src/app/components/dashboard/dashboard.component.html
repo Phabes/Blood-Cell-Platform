@@ -1,17 +1,22 @@
 <div class="d-flex-grow-2 p-2 container-fluid">
   <div class="row mx-5">
-    <div class="col-md-6">
-      <table class="table table-hover">
-        <thead>
+    <div class="col-md-6 overflow-auto justify-content-center">
+      <table class="table mx-0 justify-content-center">
+        <thead class="justify-content-center">
           <tr>
             <th scope="col">Type</th>
             <th scope="col">Date</th>
             <th scope="col">Information</th>
           </tr>
         </thead>
-        <tbody>
-          <tr class="cart-item" *ngFor="let log of logs; index as i">
-            <td>
+        <tbody class="overflow-auto justify-content-center">
+          <tr
+            class="cart-item overflow-auto"
+            *ngFor="let log of logs; index as i"
+          >
+            <td
+              style="word-wrap: break-word; min-width: 160px; max-width: 280px"
+            >
               {{
                 (log.type.charAt(0).toUpperCase() + log.type.slice(1)).replace(
                   "_",
@@ -19,7 +24,9 @@
                 )
               }}
             </td>
-            <td>
+            <td
+              style="word-wrap: break-word; min-width: 160px; max-width: 160px"
+            >
               {{
                 log.date
                   .toString()
@@ -28,22 +35,88 @@
                   .split(".")[0]
               }}
             </td>
-            <td>{{ log.text }}</td>
+            <td
+              class="overflow-auto mx-0"
+              style="word-wrap: break-word; min-width: 300px; max-width: 400px"
+            >
+              {{ log.text }}
+            </td>
           </tr>
         </tbody>
       </table>
+      <nav *ngIf="numbers.length > 1">
+        <ul class="pagination justify-content-center">
+          <li
+            id="prev"
+            class="page-item"
+            [ngClass]="{ disabled: options.page === 1 }"
+          >
+            <a class="page-link" (click)="prev()">Previous</a>
+          </li>
+          <ng-container *ngIf="logs">
+            <li
+              class="page-item"
+              *ngFor="let number of numbers"
+              [ngClass]="{ active: options.page === number }"
+            >
+              <a class="page-link" (click)="to(number)">{{ number }}</a>
+            </li>
+          </ng-container>
+          <li
+            id="next"
+            class="page-item"
+            [ngClass]="{ disabled: options.page === numbers.length }"
+          >
+            <a class="page-link" (click)="next()" disabled="true">Next</a>
+          </li>
+        </ul>
+      </nav>
     </div>
-    <div class="col-md-6">
+
+    <div class="col-md-6 overflow-auto">
       <div class="card-body">
-        <h5 class="card-title">Card title</h5>
-        <p class="card-text">
-          This is a wider card with supporting text below as a natural lead-in
-          to additional content. This content is a little bit longer.
-        </p>
-        <p class="card-text">
-          <small class="text-muted">Last updated 3 mins ago</small>
-        </p>
+        <div class="cont col h-1000 align-items-center justify-content-center">
+          <div class="glass">
+            <div
+              class="water"
+              [style.top.px]="waterTop"
+              [style.height.px]="waterHeight"
+            >
+              <div class="wave"></div>
+              <div class="rewave"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="points" class="align-items-center text-center py-5">
+        <h2>Points summary: {{ sumOfPoints }} / {{ generalMaxPoints }}</h2>
       </div>
     </div>
+    <h1 class="mb-0 mt-4">Grades list:</h1>
+    <table class="table mx-0 justify-content-center">
+      <thead class="justify-content-center">
+        <tr>
+          <th scope="col">Activity Name</th>
+          <th scope="col">Max Points</th>
+          <th scope="col">Grade</th>
+        </tr>
+      </thead>
+      <tbody class="overflow-auto justify-content-center">
+        <tr
+          class="cart-item overflow-auto"
+          *ngFor="let activity of activities; index as i"
+        >
+          <td>
+            {{ activity.name }}
+          </td>
+          <td>
+            {{ activity.max_points }}
+          </td>
+          <td>
+            {{ grades[i] }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>

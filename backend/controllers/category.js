@@ -1,7 +1,9 @@
 const Activity = require("../models/activity");
 const Category = require("../models/category");
+const { validateRequestBodyExistence, validatePastDate } = require("../validators/requestBodyValidator");
 
 module.exports.getAllCategories = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const categories = await Category.find();
     res.status(200).json(categories);
@@ -11,8 +13,11 @@ module.exports.getAllCategories = async (req, res) => {
 };
 
 module.exports.addCategory = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const category = req.body;
+    if (validateRequestBodyExistence([category.name, category.created_on], res)) return;
+    if (validatePastDate(category.created_on, res)) return;
     const newCategory = new Category(category);
     newCategory.save();
     res.status(200).json({
@@ -25,8 +30,10 @@ module.exports.addCategory = async (req, res) => {
 };
 
 module.exports.assignSubcategory = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const { categoryID, subcategoryID } = req.body;
+    if (validateRequestBodyExistence([categoryID, subcategoryID], res)) return;
     await Category.findByIdAndUpdate(categoryID, {
       $addToSet: { sub_categories: subcategoryID },
     });
@@ -40,8 +47,10 @@ module.exports.assignSubcategory = async (req, res) => {
 };
 
 module.exports.assignActivity = async (req, res) => {
+  res.header("Access-Control-Allow-Credentials", true);
   try {
     const { categoryID, activityID } = req.body;
+    if (validateRequestBodyExistence([categoryID, activityID], res)) return;
     await Category.findByIdAndUpdate(categoryID, {
       $addToSet: { activities: Object(activityID) },
     });

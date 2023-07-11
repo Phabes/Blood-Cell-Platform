@@ -23,11 +23,11 @@ export class CategoriesService {
     this.items.push(category);
   }
 
-  getItems() {
-    return this.http.get<{ date: Date; task: string; points: number }[]>(
-      "../assets/categories.json"
-    );
-  }
+  // getItems() {
+  //   return this.http.get<{ date: Date; task: string; points: number }[]>(
+  //     "../assets/categories.json"
+  //   );
+  // }
 
   addCategory_noAboveCategoryChosen(data: any): Observable<any> {
     const newCategory = {
